@@ -29,7 +29,7 @@ const modal = new Tilux({
 modal.show = (candle, onOkCb) => {
 	modal.f.candle = candle;
 	modal.f.display = 'block';
-	modal.f.onOk = onOkCb || candle.f.okCb || modal.hide;
+	modal.f.onOk = onOkCb || modal.hide ;
 }
 
 modal.hide = () => {

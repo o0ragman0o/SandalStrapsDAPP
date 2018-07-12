@@ -1,3 +1,9 @@
+const WithdrawableABI = [{"constant":true,"inputs":[{"name":"_addr","type":"address"}],"name":"etherBalanceOf","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_to","type":"address"},{"name":"_value","type":"uint256"}],"name":"withdrawTo","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"_value","type":"uint256"}],"name":"withdraw","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[],"name":"withdrawAll","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"_from","type":"address"},{"name":"_value","type":"uint256"}],"name":"withdrawFrom","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"_addrs","type":"address[]"},{"name":"_values","type":"uint256[]"}],"name":"withdrawFor","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"_addrs","type":"address[]"}],"name":"withdrawAllFor","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"_from","type":"address"}],"name":"withdrawAllFrom","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"anonymous":false,"inputs":[{"indexed":true,"name":"_from","type":"address"},{"indexed":false,"name":"_value","type":"uint256"}],"name":"Deposit","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"_from","type":"address"},{"indexed":true,"name":"_to","type":"address"},{"indexed":false,"name":"_value","type":"uint256"}],"name":"Withdrawal","type":"event"}];
+const WithdrawableContract = web3.eth.contract(WithdrawableABI);
+
+const WithdrawableMinABI = [{"constant":false,"inputs":[],"name":"withdrawAll","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"anonymous":false,"inputs":[{"indexed":true,"name":"_from","type":"address"},{"indexed":false,"name":"_value","type":"uint256"}],"name":"Deposit","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"_from","type":"address"},{"indexed":true,"name":"_to","type":"address"},{"indexed":false,"name":"_value","type":"uint256"}],"name":"Withdrawal","type":"event"}];
+const WithdrawableMinContract = web3.eth.contract(WithdrawableMinABI);
+
 // $import('js/apis/WithdrawableAPI.js');
 
 const formatWithdrawableEvents = (log, k) => {
@@ -23,7 +29,7 @@ const formatWithdrawableEvents = (log, k) => {
 const deposit = (k) => {
 	const self = {
 		w: `<div>
-				<input id="deposit-inp" type="text" type="number" placeholder="Deposit value" value="{$@value}" />
+				{>(ethValInp('depositVal', 'Deposit value...'))}
 				<button id="deposit-btn">Deposit</button>
 			</div>`,
 		f: {
@@ -34,7 +40,7 @@ const deposit = (k) => {
 				change: event => self.f.value = event.target.value,
 			},
 			"#deposit-btn": {
-				click: () => web3.eth.sendTransaction({from: currAccountLux.address, to:k.address, value: self.f.value * 1e18, gas: 100000}),
+				click: () => web3.eth.sendTransaction({from: Session.currAccount, to:k.address, value: self.f.value * 1e18, gas: 100000}),
 			},
 		},
 	}
@@ -52,7 +58,7 @@ const withdrawAll = (k) => {
 		f: {
 			get ethBal() {
 				if(k.hasOwnProperty('etherBalanceOf')) {
-					return k.etherBalanceOf(currAccountLux.address);
+					return k.etherBalanceOf(Session.currAccount);
 				} else {
 					return balance(k.address);
 				}
@@ -69,7 +75,7 @@ const withdrawAll = (k) => {
 
 const withdrawAllFor = (k) => {
 	const self = {
-		w: `<input id="wdAllFor-inp" type="text" placeholder="addresses to withdraw" value="{$@wdAllAddrs}" />
+		w: `{>(ethAddrInp('wdaf', "array of addresses to withdraw for..."))}
 			<button id="wdAllFor-btn">Withdraw All For</button>`,
 		f: {
 			wdAllAddrs: '',
@@ -82,7 +88,7 @@ const withdrawAllFor = (k) => {
 				click: () => {
 					let addrs = self.wdAllAddrs.split(',');
 					addrs = addrs.map(addr=>{if(isAddr(addr)) return addr; });
-					if (isAddr(self.f.addr)) k.withdrawAllFor([self.f.addr], {from: currAccountLux.address, gas: 100000})},
+					if (isAddr(self.f.addr)) k.withdrawAllFor([self.f.addr], {from: Session.currAccount, gas: 100000})},
 			},
 		},
 	}

@@ -1,18 +1,19 @@
-var blockLux = new Lux({block:web3.eth.getBlock('latest'), sync:web3.eth.syncing});
-var networkLux = new Lux(web3.version);
+Session.block = web3.eth.getBlock('latest');
+Session.sync = web3.eth.syncing;
+Session.network = web3.version;
 
 
 const netStats = new Tilux({
 	w: `
 		<div id='{$@id}'>
-			<i class="fas fa-fw fa-share-alt"></i> {$networkLux.network} {$@netName}<br>
-			<i class="fas fa-fw fa-cubes"></i> {$blockLux.block.number} / {$blockLux.sync.highestBlock || "sync'd"}<br>
+			<i class="fas fa-fw fa-share-alt"></i> {$Session.network.network} {$@netName}<br>
+			<i class="fas fa-fw fa-cubes"></i> {$Session.block.number} / {$Session.sync.highestBlock || "sync'd"}<br>
 			<i class="fas fa-fw fa-users"></i> {$web3.net.peerCount}
 		 </div>
 	`,
 	f:{
 		id: 'net-stats',
-		get netName() {return {0:'Olympic',1:'Main Net',2:'Mordon',3:'Ropsten',4:'Rinkeby',42:'Kovan',77:'Sokol',99:'Core'}[networkLux.network] || `Private`;},
+		get netName() {return {0:'Olympic',1:'Main Net',2:'Mordon',3:'Ropsten',4:'Rinkeby',42:'Kovan',77:'Sokol',99:'Core'}[Session.network.network] || `Private`;},
 	},
 })
 
@@ -24,13 +25,13 @@ const network = new Tilux({
 	`,
 	f: {
 		id: "network-tplt",
-		isConnected: web3.isConnected(),
+		get isConnected() { return web3.isConnected() },
 	}
 })
 
-netStats.gaze(blockLux);
-netStats.gaze(networkLux);
-network.gaze(networkLux);
+netStats.gaze(Session.block);
+netStats.gaze(Session.network);
+network.gaze(Session.network);
 
 const BlockFilter = web3.eth.filter('latest');
 
@@ -40,12 +41,12 @@ BlockFilter.watch((err, res) => {
 	} else {
 		web3.eth.getBlock('latest',
 			(err, block)=>{
-				if(!err) blockLux.block = block;
+				if(!err) Session.block = block;
 			});
-		web3.eth.getBalance(currAccountLux.address,
-			(err, bal)=>{
-				if(!err) currAccountLux.balance = bal
-			});
+		// web3.eth.getBalance(Session.currAccount,
+		// 	(err, bal)=>{
+		// 		if(!err) currAccountLux.balance = bal
+		// 	});
 	}
 });
 

@@ -23,7 +23,7 @@ function block(num) {
 
 function toEther(num) {
     if (!(num instanceof BigNumber)) num = new BigNumber(num);
-    return web3.fromWei(num).toFormat(3);
+    return web3.fromWei(num).toFormat(4);
 }
 
 function toWei(num) {
@@ -58,16 +58,8 @@ function utf8(hex) {
 	return web3.toUtf8(hex);
 }
 
-function blockie(addr) {
-	return blockies.create({seed:addr.toLowerCase(), size:5, scale:10}).toDataURL();
-}
-
-function blockieSml(addr) {
-    return blockies.create({seed:addr.toLowerCase()}).toDataURL();
-}
-
-function blockieTny(addr) {
-	return blockies.create({seed:addr.toLowerCase(), size:5, scale:3}).toDataURL();
+function blockie(addr, scale = 5) {
+	return !addr ? '' : blockies.create({seed:addr.toLowerCase(), size:8, scale:scale}).toDataURL();
 }
 
 function txcb(e, receipt){

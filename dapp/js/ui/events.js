@@ -15,7 +15,7 @@ const formatUnknownEvents = (log, k) => {
 	return Tilux.l({
 		w: `
 			<h4>${log.event}</h4>
-			{#([],@args)}
+			{#(@args)}
 			`,
 		f: {
 			args: Object.keys(log.args).map((k)=>{return `<label>${k}</label><span class="mono">${log.args[k]}</span><br />`}),

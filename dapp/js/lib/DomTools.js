@@ -1,12 +1,12 @@
 
 
-function $import(file, async = false) {
+function $import(file, cb = null) {
     // DOM: Create the script element
     let jsElm = document.createElement("script");
     jsElm.type = "application/javascript";
     jsElm.src = file;
-    jsElm.async = async;
-	jsElm.onload = ()=>(console.log("loaded element", jsElm));
+    // jsElm.async = async;
+	jsElm.onload = cb ? cb : ()=>{console.log("loaded element", jsElm)};
     document.head.appendChild(jsElm);
 	console.log("created", file);
 }
@@ -40,6 +40,15 @@ function $getFile(filePath, cb) {
 	file.send();
 	console.log(file);
 }
+
+
+// const needsQueue = [];
+// function $needs(filePath) {
+// 	needsQueue.push(filePath);
+// 	while (needsQueue.length > 0)
+// 		$import(needsQueue.shift(), 
+
+// }
 
 function $(selector, parent = document) {
 	return Array.prototype.slice.call(parent.querySelectorAll(selector),0);

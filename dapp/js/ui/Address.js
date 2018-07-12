@@ -3,7 +3,7 @@ const addressModal = (addr) => {
 	return {
 		w: `
 			<div id="{$@id}">
-				<h1><img class="idicon-sml" src="{$blockieSml(@addr)}" /> Account</h1>
+				<h1>{>(idicon(@addr,4,"idicon-sml"))} Account</h1>
 				<div class="modal-content fs08">
 					<label>Address</label><a class="ss-addr" href="http://etherscan.io/address/{$@addr}" target="_">{$@addr}</a><br >
 					<label>Balance</label>{>(ethVal(@bal))}<br >

@@ -1,3 +1,8 @@
+// import * from "DappResources.js";
+
+const RegBaseABI = [{"constant":false,"inputs":[{"name":"_resource","type":"bytes32"}],"name":"changeResource","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"regName","outputs":[{"name":"","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"resource","outputs":[{"name":"","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[],"name":"acceptOwnership","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[],"name":"destroy","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"owner","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_owner","type":"address"}],"name":"changeOwner","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"newOwner","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"VERSION","outputs":[{"name":"","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"},{"inputs":[{"name":"_creator","type":"address"},{"name":"_regName","type":"bytes32"},{"name":"_owner","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"name":"_newOwner","type":"address"}],"name":"ChangeOwnerTo","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"_oldOwner","type":"address"},{"indexed":true,"name":"_newOwner","type":"address"}],"name":"ChangedOwner","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"_kAddr","type":"address"}],"name":"ReceivedOwnership","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"_resource","type":"bytes32"}],"name":"ChangedResource","type":"event"}];
+const RegBaseContract = web3.eth.contract(RegBaseABI);
+
 // $import('js/apis/RegBaseAPI.js');
 
 const formatRegBaseEvents = (log) => {
@@ -33,7 +38,7 @@ const regOwned = (k) => {
 			<h3>RegBase Owner Functions</h3>
 			{>(owned(@k))}
 			<div class="ss-panel">
-				<input id="change-res-inp" type="text" placeholder="New resource hash" value="{$@res}"/>
+				{>(ethHexInp(@res))}
 				<button id="change-res-btn">Change Resource</button>
 			</div>
 			<div>
@@ -72,7 +77,7 @@ const regBase = {
 		if(k) return {
 			w: `
 				<div id="{$@id}" class="rb-button" onclick="{$@click}('{$@kAddr}')">
-					<img class="idicon-sml" src="{$blockieSml(@kAddr)}" />
+					{>(idicon(@kAddr))}
 					<div class="inline">
 						<div class="rb-regname-sml">{$@regName}</div>
 						<div class="rb-version-sml darkest">{$@version}</div>
@@ -98,7 +103,7 @@ const regBase = {
 		if(k) return {
 			w: `
 				<div id="{$@id}" class="ss-button" onclick="{$@click}('{$@kAddr}')">
-					<img class="idicon-sml" src="{$blockieSml(@kAddr)}" />
+					{>(idicon(@kAddr))
 					<div class="inline">
 						<div class="rb-regname-sml">{$@k.regname}</div>
 						<div class="rb-version-sml darkest">{$@k.version}</div>
@@ -122,12 +127,12 @@ const regBase = {
 			const self = new Tilux({
 				w: `<div id="{$@id}" class="layer" >
 						<div class="regBase-adv">
-							<img class="rb-idicon idicon" src="{$blockie(@kAddr)}" />
+							{>(idicon(@kAddr, 7, 'rb-idicon'))}
 							<div class="rb-title"><span class="rb-regname">{$@regName}</span>
 								<span class="rb-version">{$@version}</span>
 								<span id="docsLink" class="docs-link"><i class="far fa-question-circle"></i></span>
 							</div>
-							<div class="rb-addr ss-addr-sml k-addr"><i class="fas fa-fw fa-file-alt"></i> <span class="ss-addr" onclick="modal.show(addressModal('{$@kAddr}'))">{$@kAddr}</span></div>
+							<div class="rb-addr ss-addr-sml k-addr"><i class="fas fa-fw fa-file-alt"></i> {>(addrLink(@kAddr))}</div>
 							<div class="rb-owner ss-addr-sml u-addr"><i class="fas fa-fw fa-user"></i> {>(addrLink(@owner))}</div>
 							<div class="rb-bal js-end as-end">{>(ethVal(@ethBal))}</div>
 							<div class="rb-ext">
@@ -149,8 +154,8 @@ const regBase = {
 					s_owning: owning(k),
 					s_newOwner: newOwner(k),
 					get owner() {return 'owner' in k ? checksumAddr(k.owner()) : 'Contract is not ownable'},
-					get isOwner() {return 'owner' in k ? k.owner() === currAccountLux.address : false;},
-					get isNewOwner() {return 'newOwner' in k ? k.newOwner() === currAccountLux.address : false;},
+					get isOwner() {return 'owner' in k ? k.owner() === Session.currAccount : false;},
+					get isNewOwner() {return 'newOwner' in k ? k.newOwner() === Session.currAccount : false;},
 					get resource() {return 'resource' in k ? k.resource() : 'Contract has no resource field';},
 					get docsPath() { return resources[this.version].docPath }
 				},

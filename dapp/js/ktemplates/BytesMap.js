@@ -1,5 +1,10 @@
 
+/* API */
+const BytesMapABI = [{"constant":false,"inputs":[{"name":"_resource","type":"bytes32"}],"name":"changeResource","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"regName","outputs":[{"name":"","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"resource","outputs":[{"name":"","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_hash","type":"bytes32"}],"name":"clearHash","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"_type","type":"bytes4"},{"name":"_bytes","type":"bytes"}],"name":"clear","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[],"name":"acceptOwnership","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"_type","type":"bytes4"},{"name":"_bytes","type":"bytes"}],"name":"store","outputs":[{"name":"hash_","type":"bytes32"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[],"name":"destroy","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"owner","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_newOwner","type":"address"}],"name":"changeOwner","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"newOwner","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"bytes32"}],"name":"bytesMap","outputs":[{"name":"","type":"bytes"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"VERSION","outputs":[{"name":"","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"},{"inputs":[{"name":"_creator","type":"address"},{"name":"_regName","type":"bytes32"},{"name":"_owner","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"name":"_hash","type":"bytes32"}],"name":"Stored","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"_resource","type":"bytes32"}],"name":"ChangedResource","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"_newOwner","type":"address"}],"name":"ChangeOwnerTo","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"_oldOwner","type":"address"},{"indexed":true,"name":"_newOwner","type":"address"}],"name":"ChangedOwner","type":"event"}];
+const BytesMapContract = web3.eth.contract(BytesMapABI);
 
+
+/* Events formating */
 const formatBytesMapEvents = (log, k) => {
 	switch (log.event) {
 		case 'Stored': return Tilux.l(`
@@ -11,6 +16,7 @@ const formatBytesMapEvents = (log, k) => {
 	}
 }
 
+/* Template */
 const bytesMap = {
 
 	minimal: (k) => {
@@ -41,7 +47,7 @@ const bytesMap = {
 						<input id="key-input-{$@kAddr}" placeholder="Key" class="mono" type="text" value="{$@key}"></input>
 						<button id="clear-key-btn">Clear Key</button><br />
 					<select id="reg-in-name" class="ss-input" placeholder="Registrar">
-						{#(['option'], @types)}
+						{#(@types, ['option'])}
 					</select>
 						<textarea id="text-area-{$@kAddr}" placeholder="Enter bytes to store">{$@bytes}</textarea><br />
 						<button id="set-btn">Set</button>
@@ -70,17 +76,17 @@ const bytesMap = {
 				},
 				"#store-btn": {
 					click: event => {
-						self.f.k.store(self.f.string, {from: currAccountLux.address})
+						self.f.k.store(self.f.string, {from: Session.currAccount})
 					},
 				},
 				"#clear-str-btn": {
 					click: event => {
-						self.f.k.clear(self.f.string, {from: currAccountLux.address})						
+						self.f.k.clear(self.f.string, {from: Session.currAccount})						
 					}
 				},
 				"#clear-hsh-btn": {
 					click: event => {
-						self.f.k.clearHash(self.f.hash, {from: currAccountLux.address})						
+						self.f.k.clearHash(self.f.hash, {from: Session.currAccount})						
 					}
 				},
 			}

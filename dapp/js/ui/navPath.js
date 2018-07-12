@@ -1,44 +1,46 @@
+Session.navPathItems = [];
+
 const navPath = new Tilux({
 		w: `
 			<div id="{$@id}" class="nav-path js-start">
-			{#([''],navPath.getPath())}
+			{#(@path)}
 			</div>
 		`,
 		f: {
 			id: "nav-path",
-			selected: -1,
-			pathItems: [],
+			bind: "navSelected",
+			get path() {
+				return Session.navPathItems.length > 0 ? Session.navPathItems.map((kAddr, i) => {return Tilux.l(pathItem(kAddr, i))}) : ['No path items...'];
+			}
 		}
 	});
 
-navPath.getPath = () => {
-	return navPath.f.pathItems.length > 0 ? navPath.f.pathItems.map(i => Tilux.l(i)) : [];
-}
-
-navPath.select = (i) => {
-	navPath.f.pathItems[navPath.f.selected > -1 ? navPath.f.selected : 0].f.active = false;
-	navPath.f.selected = i;
-	navPath.f.pathItems[i].f.active = true;
-	mainTplt.f.kAddr = null; // Clear current template
-	mainTplt.f.kAddr = navPath.f.pathItems[i].f.kAddr;
-}
-
 navPath.push = (kAddr) => {
-	navPath.f.pathItems = navPath.f.pathItems.slice(0, 1 + navPath.f.selected);
-	navPath.f.pathItems.push(navPath.newPathItem(kAddr, 1 + navPath.f.selected));
-	navPath.select(navPath.f.pathItems.length-1);
+	Session.navPathItems = Session.navPathItems.slice(0, 1 + Session.navSelected);
+	Session.navPathItems.push(kAddr);
+	Session.navSelected = Session.navPathItems.length - 1;
+	Session.currKAddr = kAddr;
 }
 
-navPath.newPathItem = (kAddr,i) => {
-	return new Tilux({
+const pathItem = (kAddr,i) => {
+	return {
 		w: `
-			<div id="{$@id}" class="path-item {>("active", @active)}" onclick="navPath.select(${i})">${getRegName(kAddr)}</div>
+			<div id="nav-${kAddr}" class="path-item {>("active", @active)}" onclick="Session.navSelected = ${i}; Session.currKAddr='${kAddr}';">${getRegName(kAddr)}</div>
 		`,
 		f: {
+			id: `nav-${kAddr}`,
 			kAddr: kAddr,
-			active: false,
+			get active() { return i === Session.navSelected; },
+		},
+		s: {
+			[`nav-${kAddr}`]: {
+				click() {
+					Session.navSelected = i;
+					Session.currKAddr = kAddr;
+				},
+			},
 		}
-	})
+	}
 }
 
 console.log("ran navPath.js");

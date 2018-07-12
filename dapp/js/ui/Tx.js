@@ -1,5 +1,5 @@
 function toTx(k, func, data, txObj = {}) {	
-	if(!txObj.from) txObj.from = currAccountLux.address;
+	if(!txObj.from) txObj.from = Session.currAccount;
 	if(!txObj.to) txObj.to = k.address;
 	if(!txObj.value) txObj.value = 0;
 	if(!txObj.data) txObj.data = k[func].getData(data);
@@ -11,7 +11,7 @@ function toTx(k, func, data, txObj = {}) {
 
 
 const txForm = (txObj = {}) => {
-	if(!txObj.from) txObj.from = currAccountLux.address;
+	if(!txObj.from) txObj.from = Session.currAccount;
 	if(!txObj.to) txObj.to = null;
 	if(!txObj.value) txObj.value = 0;
 	if(!txObj.gasPrice) txObj.gasPrice = web3.eth.gasPrice;
@@ -34,7 +34,7 @@ const txForm = (txObj = {}) => {
 		f: {
 			txObj: txObj,
 			cb: txObj.cb,
-			get from() { return txObj.from || currAccountLux.address },
+			get from() { return txObj.from || Session.currAccount },
 			get value() { return web3.fromWei(txObj.value) },
 			get gas() { return txObj.gas },
 			get gasPrice() { return txObj.gasPrice || web3.eth.gasPrice },

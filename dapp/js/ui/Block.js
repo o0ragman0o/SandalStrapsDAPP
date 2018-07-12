@@ -1,4 +1,3 @@
-
 const blockModal = (blockNum) => {
 	let blk = web3.eth.getBlock(blockNum);
 

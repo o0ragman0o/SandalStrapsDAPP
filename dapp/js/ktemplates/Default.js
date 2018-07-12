@@ -1,8 +1,11 @@
+
+/* Default event formating */
 const formatDefaultEvents = (log, k) => {
 	return formatWithdrawableEvents(log, k);						
 }
 
 
+/* Default template for an unknown contract */
 const defaultTemplate = {
 
 	minimal: (k) => {

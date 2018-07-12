@@ -1,53 +1,29 @@
-const currAccountLux = new Lux({address:web3.eth.accounts[0], balance:new web3.BigNumber(0)});
-
-const accountBalTplt = new Tilux({
-
-	w:`
-		<span id="{$@id}" class="balance">
-		{>(ethVal(balance(currAccountLux.address)))}
-		</span>
-	`,
-	f: {
-		id: 'accBal',
-	}
-})
+// const currAccountLux = new Lux({address:web3.eth.accounts[0], balance:new web3.BigNumber(0)});
+Session.currAccount = web3.eth.accounts[0];
+Session.accounts = web3.eth.accounts;
 
 const accountsTplt = new Tilux({
-	w:`
-		<div id="{$@id}" class="js-end">
-			<span id="send-tx">
-				<i class="fa fa-paper-plane" aria-hidden="true"></i>
-			</span>
-			<span>
-			{>(accountBalTplt)}
-			</span>
-			<img class="idicon-sml input-icon" src="{$blockieSml(@account)}" />
-			{>(selectInput('acc-sel', @accounts))}
-			<span id="search">
-				<i class="fas fa-search"></i> 
-			</span>
-		</div>
-	`,
-	f: {
-		id: "accounts",
-		get accounts() { return accounts(); },
-		get account() { return currAccountLux.address; }
-	},
-	s: {
-		"#send-tx": {
-			click() { modal.show(txForm()) }
+		w:`
+			<div id="{$@id}" class="js-end">
+				{>(accountSelect('currAccount'))}
+				<span id="send-tx"><i class="fa fa-paper-plane" aria-hidden="true"></i></span>
+				<span id="search"><i class="fas fa-search"></i></span>
+			</div>
+		`,
+		f: {
+			id: newId("accTplt_"),
 		},
-		"#search": {
-			click() { modal.show(searchForm()) }
-		},
-		"#acc-sel": {
-			change(event) {
-				currAccountLux.address = event.target.value; }
-		},
-	}
-})
+		s: {
+			"#send-tx": {
+				click() { modal.show(txForm()) }
+			},
+			"#search": {
+				click() { modal.show(searchForm()) }
+			},
+		}
+	});
 
-accountsTplt.gaze(currAccountLux);
+// accountsTplt.gaze(currAccountLux);
 
 console.log("ran Accounts.js");
 

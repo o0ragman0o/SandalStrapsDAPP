@@ -1,5 +1,9 @@
-// $import ("js/apis/Erc20API.js");
 
+/* API */
+const Erc20ABI = [{"constant":false,"inputs":[{"name":"_spender","type":"address"},{"name":"_amount","type":"uint256"}],"name":"approve","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"totalSupply","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_from","type":"address"},{"name":"_to","type":"address"},{"name":"_amount","type":"uint256"}],"name":"transferFrom","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"_addr","type":"address"}],"name":"balanceOf","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_to","type":"address"},{"name":"_amount","type":"uint256"}],"name":"transfer","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"_owner","type":"address"},{"name":"_spender","type":"address"}],"name":"allowance","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"anonymous":false,"inputs":[{"indexed":true,"name":"_from","type":"address"},{"indexed":true,"name":"_to","type":"address"},{"indexed":false,"name":"_amount","type":"uint256"}],"name":"Transfer","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"_owner","type":"address"},{"indexed":true,"name":"_spender","type":"address"},{"indexed":false,"name":"_amount","type":"uint256"}],"name":"Approval","type":"event"}];
+const Erc20Contract = web3.eth.contract(Erc20ABI);
+
+/* Event format template */
 const formatErc20Events = (log, k) => {
 	switch (log.event) {
 		case 'Transfer': return Tilux.l(`
@@ -20,7 +24,7 @@ const formatErc20Events = (log, k) => {
 	}
 }
 
-
+/* Form Temaplate */
 const erc20Form = (k) => {
 	const self = {
 		w: `
@@ -29,18 +33,18 @@ const erc20Form = (k) => {
 			<h3>{$@name} {$@symbol}</h3>
 			<i class="fas fa-fw fa-dot-circle"></i>{$@supply} Total Supply
 			<h3>Transfer</h3>
-			<input id="toAddr-inp" placeholder="Recipient address" value="{$@toAddr}"></input>
-			<input id="toAmnt-inp" type="number" placeholder="Amount" value="{$@toAmnt}"></input>
+			{>(ethAddrInp('erc20ToAddr', 'To address...'))}<br />
+			{>(ethValInp('erc20ToVal', 'Value in ether...'))}<br />
 			<button id="transfer-btn">Transfer</button>
 			<h3>Transfer From</h3>
 			<p><i class="fas fa-fw fa-dot-circle"></i>{$@allowance(@allowFrom)} Approved from {$@allowFrom}</p>
-			<input id="allowFrom-inp" placeholder="From address" value="{$@allowFrom}"></input>
-			<input id="allowTo-inp" placeholder="Recipient address" value="{$@allowTo}"></input>
-			<input id="allowAmnt-inp" type="number" placeholder="Amount" value="{$@allowAmnt}"></input>
+			{>(ethAddrInp('erc20FromAddr', 'From address...'))}<br />
+			{>(ethAddrInp('erc20FromToAddr', 'To address...'))}<br />
+			{>(ethValInp('erc20AllowedVal', 'Value in ether...'))}<br />
 			<button id="transferFrom-btn">Transfer</button>
 			<h3>Approve</h3>
-			<input id="approveAddr-inp" placeholder="Approve address" value="{$@apprAddr}"></input>
-			<input id="approveAmnt-inp" type="number" placeholder="Amount" value="{$@apprAmnt}"></input>
+			{>(ethAddrInp('erc20ApprAddr', 'To address...'))}<br />
+			{>(ethValInp('erc20ApprVal', 'Value in ether...'))}<br />
 			<button id="approve-btn">Approve</button>
 		</div>
 		`,
@@ -50,7 +54,7 @@ const erc20Form = (k) => {
 			symbol: utf8(k.symbol()),
 			supply: k.totalSupply().div(10**k.decimals()),
 			decimals: k.decimals().toNumber(),
-			tokBal: k.balanceOf(currAccountLux.address).div(10**k.decimals().toNumber()),
+			tokBal: k.balanceOf(Session.currAccount).div(10**k.decimals().toNumber()),
 			toAddr: '',
 			toAmnt: '',
 			allowFrom: '',
@@ -58,7 +62,7 @@ const erc20Form = (k) => {
 			allowAmnt: '',
 			apprAddr: '',
 			apprAmnt: '',
-			allowance: (frm)=>{return toDecimal(k.allowance(frm, currAccountLux.address), self.f.decimals)},
+			allowance: (frm)=>{return toDecimal(k.allowance(frm, Session.currAccount), self.f.decimals)},
 		},
 		s: {
 			'#toAddr-inp': {
@@ -70,7 +74,7 @@ const erc20Form = (k) => {
 			'#transfer-btn': {
 				click: () => {
 					if(isAddr(self.f.toAddr) && self.f.toAmnt >= 0)
-						self.f.k.transfer(self.f.toAddr, self.f.toAmnt * 10**self.f.decimals, {from: currAccountLux.address, gas:200000});
+						self.f.k.transfer(self.f.toAddr, self.f.toAmnt * 10**self.f.decimals, {from: Session.currAccount, gas:200000});
 				},
 			},
 			'#allowFrom-inp': {
@@ -85,7 +89,7 @@ const erc20Form = (k) => {
 			'#transferFrom-btn': {
 				click: () => {
 					if(isAddr(self.f.allowFrom) && isAddr(self.f.allowTo) && self.f.allowAmnt >= 0)
-						self.f.k.transferFrom(self.f.allowFrom, self.f.allowTo, toWei(self.f.toAmnt), {from: currAccountLux.address, gas:200000});
+						self.f.k.transferFrom(self.f.allowFrom, self.f.allowTo, toWei(self.f.toAmnt), {from: Session.currAccount, gas:200000});
 				},
 			},
 			'#approveAddr-inp': {
@@ -97,7 +101,7 @@ const erc20Form = (k) => {
 			'approve-btn': {
 				click: () => {
 					if(isAddr(self.f.apprAddr) && self.f.apprAmnt >= 0)
-						self.f.k.approve(self.f.apprAddr, self.f.apprAmnt, toWei(self.f.toAmnt), {from: currAccountLux.address, gas:200000});
+						self.f.k.approve(self.f.apprAddr, self.f.apprAmnt, toWei(self.f.toAmnt), {from: Session.currAccount, gas:200000});
 				},
 			},
 		},
@@ -106,6 +110,7 @@ const erc20Form = (k) => {
 	return self;
 }
 
+/* Template */
 const erc20 = {
 
 	minimal: (k) => {

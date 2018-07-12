@@ -1,17 +1,18 @@
-var hue = new Lux(200);
-var sat = new Lux(100);
-var lit = new Lux(81);
-
-var ss_style = new Tilux({
+let ss_style = new Tilux({
 		f: {
 			id: 'ss-style',
-			get darkest() {return  `hsl(${hue.value}, ${sat.value + (100 - sat.value) * 0.1}%, ${lit.value * 0.3}%)`},
-			get dark() {return  `hsl(${hue.value}, ${sat.value + (100 - sat.value) * 0.05}%, ${lit.value * 0.7}%)`},
-			get base() {return `hsl(${hue.value}, ${sat.value}%, ${lit.value}%)`},
-			get light() {return  `hsl(${hue.value}, ${sat.value - sat.value * 0.05}%, ${lit.value + (100 - lit.value) * 0.3}%)`},
-			get lightest() {return  `hsl(${hue.value}, ${sat.value - sat.value * 0.1}%, ${lit.value + (100 - lit.value) * 0.9}%)`},
-			get compliment() {return  `hsl(${(hue.value + 180) % 360}, ${sat.value}%, ${lit.value}%)`},
-			trans: `0.20s`,
+			hue: 200,
+			sat: 100,
+			lit: 81,
+			get darkest() {return  `hsl(${this.hue}, ${this.sat + (100 - this.sat) * 0.1}%, ${this.lit * 0.3}%)`},
+			get dark() {return  `hsl(${this.hue}, ${this.sat + (100 - this.sat) * 0.05}%, ${this.lit * 0.7}%)`},
+			get base() {return `hsl(${this.hue}, ${this.sat}%, ${this.lit}%)`},
+			get light() {return  `hsl(${this.hue}, ${this.sat - this.sat * 0.05}%, ${this.lit + (100 - this.lit) * 0.3}%)`},
+			get lightest() {return  `hsl(${this.hue}, ${this.sat - this.sat * 0.1}%, ${this.lit + (100 - this.lit) * 0.9}%)`},
+			get compliment() {return  `hsl(${(this.hue + 180) % 360}, ${this.sat}%, ${this.lit}%)`},
+			get invalid() {return `hsl(5, ${this.sat}%, ${this.lit}%)`},
+			get valid() {return `hsl(130, ${this.sat}%, ${this.lit * 0.9}%)`},
+			trans: `0.00s`,
 		},
 
 		w: `
@@ -108,12 +109,10 @@ var ss_style = new Tilux({
 			}
 
 			.banner {
-				/* position: sticky; */
 				top: 0px;
 				background-color: {$@darkest};
 				color: {$@lightest};
 			}
-
 
 			.main{
 				width: 90%;
@@ -129,7 +128,6 @@ var ss_style = new Tilux({
 
 			.nav-path {
 				font-size: 1em;
-				/* position: sticky; */
 				top: 64px;
 				color: {$@darkest};
 				text-transform: uppercase;
@@ -147,7 +145,6 @@ var ss_style = new Tilux({
 
 			.footer-row {
 				display: grid;
-				/* position: sticky; */
 				bottom: 0px; 
 				grid-auto-flow: column;
 				color: {$@lightest};
@@ -370,6 +367,8 @@ var ss_style = new Tilux({
 				padding: 13px 15.6px;
 				margin: 9px;
 			    transition-duration: 0.3s;
+			    vertical-align: middle;
+			    align-items: center;
 			}
 
 			button,
@@ -399,7 +398,7 @@ var ss_style = new Tilux({
 				cursor: pointer;
 				color: {$@darkest};
 				box-shadow: 0.5px 0.5px 5px {$@darkest} inset;
-				width: 300px
+				width: 372px
 			}
 
 			textarea
@@ -422,6 +421,16 @@ var ss_style = new Tilux({
 				box-shadow: 0.5px 0.5px 2px {$@darkest} inset;
 			}
 
+			input:invalid
+			{
+				background-color: {$@invalid};
+			}
+
+			input:valid
+			{
+//				background-color: {$@valid};				
+			}
+
 			button:hover,
 			.ss-button:hover,
 			.rb-button:hover
@@ -442,30 +451,36 @@ var ss_style = new Tilux({
 				display: inline-flex;
 			}
 
-			.idicon,
-			.idicon-sml,
-			.idicon-tny {
+			.ss-panel {
+				border-color: {$@lightest};
+				border-width: 1.4px;
+				border-style: solid;				
+				border-radius: 4px;
+			}
+
+			.idicon {
 				display: inline-block;
 				border-width: 2.2px;
 				border-color: {$@lightest};
 				border-style: solid;
 				border-radius: 100%;
 				width: auto;
+			    vertical-align: middle;
 			}
 
 			.idicon-sml {
 				border-width: 1.6px;
+
 			}
 
 			.idicon-tny {
 				border-width: 1px;
-				position: relative;
-				top: 0.1rem;
 			}
 
 			.input-icon {
-				position: relative;
-				top: 12px;				
+				display: inline-block;
+				width: 35px;
+				// justify-items: center;
 			}
 
 			button + input,
@@ -505,9 +520,10 @@ var ss_style = new Tilux({
 				width: 130px;
 			}
 
+			.bytes32 {
+				width: 570px;				
+			}
 		</style>
 		`,
 	}
 )
-
-console.log("ran style.js");

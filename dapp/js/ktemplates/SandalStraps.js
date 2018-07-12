@@ -1,9 +1,12 @@
+const SandalStrapsABI = [{"constant":true,"inputs":[{"name":"_registrar","type":"bytes32"},{"name":"_kAddr","type":"address"}],"name":"nameByAddressFrom","outputs":[{"name":"regName_","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_resource","type":"bytes32"}],"name":"changeResource","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"creator","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_kAddr","type":"address"},{"name":"_value","type":"uint256"}],"name":"setValueOf","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"_registrar","type":"bytes32"},{"name":"_kAddr","type":"address"}],"name":"removeFrom","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"getCommissionDivisor","outputs":[{"name":"div_","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"regName","outputs":[{"name":"","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_kAddr","type":"address"}],"name":"receiveOwnershipOf","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"_registrar","type":"bytes32"},{"name":"_kAddr","type":"address"}],"name":"indexByAddressFrom","outputs":[{"name":"idx_","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[],"name":"_init1","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"","type":"bytes32"}],"name":"reservedNames","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"resource","outputs":[{"name":"","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getRegisterFactoryFee","outputs":[{"name":"fee_","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"metaRegistrar","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_registrar","type":"bytes32"},{"name":"_idx","type":"uint256"}],"name":"nameByIndexFrom","outputs":[{"name":"regName_","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[],"name":"_init2","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"_registrar","type":"bytes32"},{"name":"_kAddr","type":"address"}],"name":"registerIn","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"_factory","type":"bytes32"},{"name":"_regName","type":"bytes32"},{"name":"_prodOwner","type":"address"}],"name":"newProduct","outputs":[{"name":"kAddr_","type":"address"}],"payable":true,"stateMutability":"payable","type":"function"},{"constant":false,"inputs":[{"name":"_kAddr","type":"address"}],"name":"registerFactory","outputs":[{"name":"","type":"bool"}],"payable":true,"stateMutability":"payable","type":"function"},{"constant":false,"inputs":[],"name":"acceptOwnership","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[],"name":"destroy","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"_kAddr","type":"address"},{"name":"_resource","type":"bytes32"}],"name":"changeResourceOf","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[],"name":"withdrawAll","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"owner","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_kAddr","type":"address"},{"name":"_callData","type":"bytes"}],"name":"callAsContract","outputs":[{"name":"","type":"bool"}],"payable":true,"stateMutability":"payable","type":"function"},{"constant":true,"inputs":[{"name":"_factory","type":"bytes32"}],"name":"getProductPrice","outputs":[{"name":"price_","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_registrar","type":"bytes32"},{"name":"_regName","type":"bytes32"}],"name":"indexByNameFrom","outputs":[{"name":"idx_","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_newOwner","type":"address"}],"name":"changeOwner","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"__initFuse","outputs":[{"name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_registrar","type":"bytes32"},{"name":"_regName","type":"bytes32"}],"name":"addressByNameFrom","outputs":[{"name":"kAddr_","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"newOwner","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_regNames","type":"bytes32[]"},{"name":"_reserved","type":"bool[]"}],"name":"reserveNames","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"_kAddr","type":"address"},{"name":"_owner","type":"address"}],"name":"changeOwnerOf","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"bootstrap","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"VERSION","outputs":[{"name":"","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"},{"inputs":[{"name":"_creator","type":"address"},{"name":"_regName","type":"bytes32"},{"name":"_owner","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"payable":true,"stateMutability":"payable","type":"fallback"},{"anonymous":false,"inputs":[{"indexed":true,"name":"_by","type":"address"},{"indexed":true,"name":"_factoryName","type":"bytes32"},{"indexed":true,"name":"_regName","type":"bytes32"},{"indexed":false,"name":"_kAddr","type":"address"}],"name":"ProductCreated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"_registrar","type":"bytes32"},{"indexed":true,"name":"_kAddr","type":"address"}],"name":"RegistrarRegister","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"_registrar","type":"bytes32"},{"indexed":true,"name":"_kAddr","type":"address"}],"name":"RegistrarRemove","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"_from","type":"address"},{"indexed":false,"name":"_value","type":"uint256"}],"name":"Deposit","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"_from","type":"address"},{"indexed":true,"name":"_to","type":"address"},{"indexed":false,"name":"_value","type":"uint256"}],"name":"Withdrawal","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"_kAddr","type":"address"}],"name":"ReceivedOwnership","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"_kAddr","type":"address"},{"indexed":true,"name":"_owner","type":"address"}],"name":"ChangeOwnerOf","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"_resource","type":"bytes32"}],"name":"ChangedResource","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"_newOwner","type":"address"}],"name":"ChangeOwnerTo","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"_oldOwner","type":"address"},{"indexed":true,"name":"_newOwner","type":"address"}],"name":"ChangedOwner","type":"event"}];
+const SandalStrapsContract = web3.eth.contract(SandalStrapsABI);
+
 // $import ("js/apis/SandalStrapsAPI.js");
 
 const alphaStrapsAddr = {
 	1: "0x4CfD8a09A3C88d20A5B166f86a9DfcB48eB464aF",
 	108: "0xC81eAd39FB82Cd54c819bb4cC542eD1Ac97b378A",
-	}[networkLux.network];
+	}[Session.network.network];
 
 
 const formatSandalStrapsEvents = (log, k) => {
@@ -49,34 +52,31 @@ const sandalStrapsOwner = (k) => {
 	const self = {
 		w: `
 			<div class="layer">
-				<h3>SandalStraps Additional Owner Functions</h3>
+				<h3>SandalStraps Owner Functions</h3>
 				<div class="ss-panel">
-					<select id="reg-in-name" class="ss-input" placeholder="Registrar">
-						{#(['option'], @rr_n)}
-					</select>
-					<input id="reg-in-kaddr" class="ss-input ss-addr" type="text" placeholder="Contract Address"></input>
+					{>(selectInp('regInReg', @rr_n))}<br />
+					{>(ethAddrInp('regRegAddr'))}<br />
 					<button id="btn-reg-in">Register In...</button>
 				</div>
 				<div class="ss-panel">
-					<select id="reg-rem-name" class="ss-input" placeholder="Registrar" selected={$@selRegVal}>
-						{#(['option'], @rr_n)}
-					</select>
-					<input id="reg-rem-kaddr" class="ss-input ss-addr" type="text" placeholder="Contract Address"></input>
+					{>(selectInp('remFmReg', @rr_n))}<br />
+					{>(ethAddrInp('remFmRegAddr'))}<br />
 					<button id="btn-reg-rem">Remove From...</button>
 				</div>
 				<div class="ss-panel">
-					<input id="chg-owner-kAddr" class="ss-input ss-addr" type="text" placeholder="Contract Address"></input>
-					<input id="chg-owner-oAddr" class="ss-input ss-addr" type="text" placeholder="New Owner Address"></input>
+					{>(ethAddrInp('chgOwnK', "Contract Address"))}<br />
+					{>(ethAddrInp('chgOwnO', "New Owner Address"))}<br />
 					<button id="btn-chg-owner">Change Owner Of...</button>
 				</div>
 				<div class="ss-panel">
-					<input id="chg-res-kAddr" class="ss-input ss-addr" type="text" placeholder="Contract Address"></input>
-					<input id="chg-res-val" class="ss-input mono" type="text" placeholder="Resource"></input>
+					{>(ethAddrInp('chgResK',"Contract Address"))}<br />
+					{>(ethHexInp('chgResV', "Resource"))}<br />
 					<button id="btn-chg-res">Change Resource Of...</button>
 				</div>
 				<div class="ss-panel">
-					<input id="set-val-kAddr"  class="ss-input ss-addr" type="text"placeholder="Contract Address"></input>
-					<input id="set-val-val" class="ss-input" type="number" placeholder="Value"></input>
+					{>(ethAddrInp('setValK', "Contract Address"))}<br />
+					{>(decInp('setValV', "Value"))}<br />
+					{>(decInp('setValD', "Decimals"))}<br />
 					<button id="btn-set-val">Set Value Of...</button>
 				</div>
 				<div class="ss-panel">
@@ -84,8 +84,8 @@ const sandalStrapsOwner = (k) => {
 					<button id="btn-rsv-names">Reserve Names</button>
 				</div>
 				<div class="ss-panel">
-					<input id="pxy-call-kAddr" class="ss-input ss-addr" type="text" placeholder="Contract Address"></input>
-					<textarea id="pxy-call-data" class="ss-input mono" placeholder="Call Data, e.g. 0xacb123..."></textarea>
+					{>(ethAddrInp('pxyCallK', "Contract address..."))}
+					{>(textAreaInp('pxyCallD', "TX call data..."))}
 					<button id="btn-pxy-call">Call Contract By Proxy</button>
 				</div>
 			</div>
@@ -115,7 +115,7 @@ const sandalStrapsOwner = (k) => {
 				'change': event => self.f.regInKAddr = event.target.value,
 			},
 			"#btn-reg-in": {
-				'click': () => self.f.k.registerIn(self.f.regInName, self.f.regKAddr, {from: currAccountLux.address}),
+				'click': () => self.f.k.registerIn(self.f.regInName, self.f.regKAddr, {from: Session.currAccount}),
 			},
 
 			"#reg-rem-name": {
@@ -125,7 +125,7 @@ const sandalStrapsOwner = (k) => {
 				'change': event => self.f.regRemKAddr = event.target.value,
 			},
 			"#btn-reg-rem": {
-				'click': () => self.f.k.removeFromIn(self.f.regRemName, self.f.regRemKAddr, {from: currAccountLux.address}),
+				'click': () => self.f.k.removeFromIn(self.f.regRemName, self.f.regRemKAddr, {from: Session.currAccount}),
 			},
 
 			"#chg-owner-kaddr": {
@@ -135,7 +135,7 @@ const sandalStrapsOwner = (k) => {
 				'change': event => self.f.chgOwnerOAddr = event.target.value,
 			},
 			"#btn-chg-owner": {
-				'click': () => self.f.k.changeOwnerOf(self.f.chgOwnerKAddr, self.f.chgOwnerOAddr, {from: currAccountLux.address}),
+				'click': () => self.f.k.changeOwnerOf(self.f.chgOwnerKAddr, self.f.chgOwnerOAddr, {from: Session.currAccount}),
 			},
 
 			"#chg-res-kaddr": {
@@ -145,7 +145,7 @@ const sandalStrapsOwner = (k) => {
 				'change': event => self.f.chgResVal= event.target.value,
 			},
 			"#btn-chg-res": {
-				'click': () => self.f.k.changeResourceOf(self.f.chgResKAddr, self.f.chgResVal, {from: currAccountLux.address}),
+				'click': () => self.f.k.changeResourceOf(self.f.chgResKAddr, self.f.chgResVal, {from: Session.currAccount}),
 			},
 
 			"#set-val-kaddr": {
@@ -159,7 +159,7 @@ const sandalStrapsOwner = (k) => {
 					let decimals = 0;
 					let vk = contracts[self.f.setValKAddr];
 					if('decimals' in vk) decimals = contracts[self.f.setValKAddr].decimals();
-					self.f.k.setValueOf(self.f.setValKAddr, self.f.setValVal*10**decimals, {from: currAccountLux.address});
+					self.f.k.setValueOf(self.f.setValKAddr, self.f.setValVal*10**decimals, {from: Session.currAccount});
 				},
 			},
 
@@ -167,7 +167,7 @@ const sandalStrapsOwner = (k) => {
 				'change': event => self.f.rsvNames = event.target.value,
 			},
 			"#btn-rsv-names": {
-				'click': () => self.f.k.reserveNames(self.f.regName, self.f.regKAddr, {from: currAccountLux.address}),
+				'click': () => self.f.k.reserveNames(self.f.regName, self.f.regKAddr, {from: Session.currAccount}),
 			},
 
 			"#pxy-call-kaddr": {
@@ -177,7 +177,7 @@ const sandalStrapsOwner = (k) => {
 				'change': event => self.f.pxyCallData = event.target.value,
 			},
 			"#btn-pxy-call": {
-				'click': () => self.f.k.callAsContract(self.f.pxyCallKAddr, self.f.pxyCallData, {from: currAccountLux.address}),
+				'click': () => self.f.k.callAsContract(self.f.pxyCallKAddr, self.f.pxyCallData, {from: Session.currAccount}),
 			},
 		}
 	}
@@ -218,18 +218,17 @@ const sandalStraps = {
 					<h3>User Functions</h3>
 					<div class="ss-panel">
 						<h3>Create a <strong>{$@crtProdFact}</strong> contract for  {>(ethVal(@crtProdPrice))}</h3>
-						<select id="sel-factory" class="ss-input" placeholder="Product" value="{$@crtProdFact}">
-							{#(['option'], @fc_n)}
-						</select>
-						<input id="crt-prod-name" class="ss-input" type="text" placeholder="Contract Name" value="{$@crtProdName}"></input>
-						<input id="crt-prod-owner" class="ss-input ss-addr" type="text" placeholder="Owner Address" value="{$@crtProdOwner}"></input>
-						<button id="btn-crt-prod">Create New...</button>
-						{>(@s_selFact)} 
+						{>(selectInp('factory_sel', @fc_n))} <br />
+						{>(txtInp('newProdName', 'New contract name...'))} <br />
+						{>(ethAddrInp('newProOwnerAddr', 'Owner address (optional)'))} <br />
+						<button id="btn-crt-prod">Create New...</button> <br />
+						{>(@selFact)}
 					</div>
 					<div class="ss-panel">
-						<input id="add-factory-inp" class="ss-input ss-addr" placeholder="Factory Address" value="{$@addFactAddr}"></input>
-						<button id="add-factory-btn">Add Factory</button>
-						{>(@s_addFact)}
+						<h3>Add a factory</h3>
+						{>(ethAddrInp('newFactAddr', 'Factory address...'))}  <br />
+						<button id="add-factory-btn">Add Factory</button>  <br />
+						{>(@addFact)}
 					</div>
 				</div>
 				{>(events(@k, formatSandalStrapsEvents))}					
@@ -242,15 +241,15 @@ const sandalStraps = {
 				metaReg: metaReg,
 				factReg: factReg,
 				fc_n: [''].concat(registrar.getNames(factReg)),
-				s_selFact: new Tilux({w:'<span id={$@id}>{>(@c)}</span>', f:{id:"factory-min", c:''}}),
-				s_addFact: new Tilux({w:'<span id={$@id}>{>(@c)}</span>', f:{id:"add-factory-min", c:''}}),
-				selFactIndex: 0,
 				addFactAddr: '',
 				crtProdFact: '',
 				crtProdName: '',
 				crtProdOwner: '',
 				crtProdPrice: new BigNumber(0),
-				get isOwner() {return k.owner() === currAccountLux.address;},
+				get isOwner() {return k.owner() === Session.currAccount;},
+				get selFactAddr() {return !Session.fc_n ? '' : this.factReg.addressByName(Session.fc_n)},
+				get selFact() { return this.selFactAddr ? kCandles[this.selFactAddr].minimal : ''; },
+				get addFact() { return Session.newFactAddr ? kCandles[Session.newFactAddr].minimal : ''; },
 			},
 			s: {
 				'#add-factory-inp': {
@@ -266,22 +265,16 @@ const sandalStraps = {
 				'#add-factory-btn': {
 					click: ()=>{
 						if(!!contracts[self.f.addFactAddr]) {
-							k.registerFactory(self.f.addFactAddr, {from: currAccountLux.address, gas:500000})
+							k.registerFactory(self.f.addFactAddr, {from: Session.currAccount, gas:500000})
 						}
 					},
 				},
-				'#sel-factory': {
+				'#factory_sel': {
 					change: (event)=>{
-						if (self.f.selFactIndex !== 0 && event.target.selectedIndex === 0) {
-							event.target.selectedIndex = self.f.selFactIndex;
-							return;
-						}
 						let fName = event.target.value;
-						let fAddr = self.f.factReg.addressByName(fName);
-						self.f.selFactIndex = event.target.selectedIndex;
+						self.f.factAddr = self.f.factReg.addressByName(fName);
 						self.f.crtProdFact = fName;
 						self.f.crtProdPrice = self.f.k.getProductPrice(fName);
-						self.f.s_selFact.f.c = fAddr == "0x0000000000000000000000000000000000000000" ? '' : kCandles[fAddr].minimal;
 					},
 				},
 				'#crt-prod-name': {
@@ -292,7 +285,7 @@ const sandalStraps = {
 				},
 				'#btn-crt-prod': {
 					click: () => self.f.k.newProduct(self.f.crtProdFact, self.f.crtProdName, self.f.crtProdOwner,
-						{from: currAccountLux.address, value: self.f.crtProdPrice, gas: 3000000}),
+						{from: Session.currAccount, value: self.f.crtProdPrice, gas: 3000000}),
 				},
 			},
 		});
