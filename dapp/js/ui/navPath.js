@@ -13,7 +13,7 @@ const navPath = new Tilux({
 				return Session.navPathItems.length > 0 ? Session.navPathItems.map((kAddr, i) => {return Tilux.l(pathItem(kAddr, i))}) : ['No path items...'];
 			}
 		}
-	});
+	}, CACHE);
 
 navPath.push = (kAddr) => {
 	Session.navPathItems = Session.navPathItems.slice(0, 1 + Session.navSelected);

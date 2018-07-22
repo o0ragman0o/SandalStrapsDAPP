@@ -11,11 +11,6 @@ function $import(file, cb = null) {
 	console.log("created", file);
 }
 
-// function $loadFile(filePath, cd) {
-// 	let file = new FileReader();
-// 	file.onload = cb;
-// }
-
 function $getFile(filePath, cb) {
 	let file = new XMLHttpRequest();
 	file.onreadystatechange = function(){
@@ -40,15 +35,6 @@ function $getFile(filePath, cb) {
 	file.send();
 	console.log(file);
 }
-
-
-// const needsQueue = [];
-// function $needs(filePath) {
-// 	needsQueue.push(filePath);
-// 	while (needsQueue.length > 0)
-// 		$import(needsQueue.shift(), 
-
-// }
 
 function $(selector, parent = document) {
 	return Array.prototype.slice.call(parent.querySelectorAll(selector),0);

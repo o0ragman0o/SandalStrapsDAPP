@@ -13,8 +13,8 @@ const formatSandalStrapsEvents = (log, k) => {
 	switch (log.event) {
 		case 'ProductCreated': return Tilux.l(`
 				<h4>'${utf8(log.args._regName)}' Created from Factory '${utf8(log.args._factoryName)}'</h4>
-				<label>Address</label> {>(ethAddrSml('${log.args._kAddr}'))}<br />
-				<label>Created By</label> {>(ethAddrSml('${log.args._by}'))}<br />
+				<label>Address</label> {>(ethAddrSml('${log.args._kAddr}'))}<br>
+				<label>Created By</label> {>(ethAddrSml('${log.args._by}'))}<br>
 				`);
 			break;
 		case 'RegistrarRegister': return Tilux.l(`
@@ -51,43 +51,49 @@ const sandalStrapsOwner = (k) => {
 	let regReg = contracts[metaReg.addressByName('registrar')];
 	const self = {
 		w: `
-			<div class="layer">
-				<h3>SandalStraps Owner Functions</h3>
-				<div class="ss-panel">
-					{>(selectInp('regInReg', @rr_n))}<br />
-					{>(ethAddrInp('regRegAddr'))}<br />
-					<button id="btn-reg-in">Register In...</button>
-				</div>
-				<div class="ss-panel">
-					{>(selectInp('remFmReg', @rr_n))}<br />
-					{>(ethAddrInp('remFmRegAddr'))}<br />
-					<button id="btn-reg-rem">Remove From...</button>
-				</div>
-				<div class="ss-panel">
-					{>(ethAddrInp('chgOwnK', "Contract Address"))}<br />
-					{>(ethAddrInp('chgOwnO', "New Owner Address"))}<br />
-					<button id="btn-chg-owner">Change Owner Of...</button>
-				</div>
-				<div class="ss-panel">
-					{>(ethAddrInp('chgResK',"Contract Address"))}<br />
-					{>(ethHexInp('chgResV', "Resource"))}<br />
-					<button id="btn-chg-res">Change Resource Of...</button>
-				</div>
-				<div class="ss-panel">
-					{>(ethAddrInp('setValK', "Contract Address"))}<br />
-					{>(decInp('setValV', "Value"))}<br />
-					{>(decInp('setValD', "Decimals"))}<br />
-					<button id="btn-set-val">Set Value Of...</button>
-				</div>
-				<div class="ss-panel">
-					<textarea id="rsv-names" class="ss-input" placeholder='Reserved Names JSON, e.g.[{name:"reservethisname", reserved:"true"},{name:"clearthisname", reserved:"false"},...]'></textarea>
-					<button id="btn-rsv-names">Reserve Names</button>
-				</div>
-				<div class="ss-panel">
-					{>(ethAddrInp('pxyCallK', "Contract address..."))}
-					{>(textAreaInp('pxyCallD', "TX call data..."))}
-					<button id="btn-pxy-call">Call Contract By Proxy</button>
-				</div>
+			<h3 class="ss-title">Register Contract in Selected Registrar</h3>
+			<div>
+				<span class="inp-icon fa-14"><i class="fas fa-th"></i></span>
+				{>(selectInp('regInReg', @rr_n))}<br>
+				{>(ethAddrInp('regRegAddr'))}<br>
+				<button id="btn-reg-in">Register</button>
+			</div>
+			<h3 class="ss-title">Remove Registration from Selected Registrar</h3>
+			<div>
+				<span class="inp-icon fa-14"><i class="fas fa-th"></i></span>
+				{>(selectInp('remFmReg', @rr_n))}<br>
+				{>(ethAddrInp('remFmRegAddr'))}<br>
+				<button id="btn-reg-rem">Remove</button>
+			</div>
+			<h3 class="ss-title">Change The Owner of a SandalStraps Owned Contract</h3>
+			<div>
+				{>(ethAddrInp('chgOwnK', "Contract Address"))}<br>
+				{>(ethAddrInp('chgOwnO', "New Owner Address"))}<br>
+				<button id="btn-chg-owner">Change Owner</button>
+			</div>
+			<h3 class="ss-title">Change Resource of a SandalStraps Owned Contract</h3>
+			<div>
+				{>(ethAddrInp('chgResK',"Contract Address"))}<br>
+				{>(ethHexInp('chgResV', "Resource"))}<br>
+				<button id="btn-chg-res">Change Resource</button>
+			</div>
+			<h3 class="ss-title">Set Value of a Contract Owned by SandalStraps</h3>
+			<div>
+				{>(ethAddrInp('setValK', "Contract Address"))}<br>
+				{>(decInp('setValV', "Value"))}<br>
+				{>(decInp('setValD', "Decimals"))}<br>
+				<button id="btn-set-val">Set Value Of...</button>
+			</div>
+			<h3 class="ss-title">Reserve a Name</h3>
+			<div>
+				<textarea id="rsv-names" class="ss-input" placeholder='Reserved Names JSON, e.g.[{name:"reservethisname", reserved:"true"},{name:"clearthisname", reserved:"false"},...]'></textarea>
+				<button id="btn-rsv-names">Reserve Names</button>
+			</div>
+			<h3 class="ss-title">Call a Contract Owned by SandalStraps</h3>
+			<div>
+				{>(ethAddrInp('pxyCallK', "Contract address..."))}<br>
+				{>(textAreaInp('pxyCallD', "TX call data..."))}<br>
+				<button id="btn-pxy-call">Call</button>
 			</div>
 		`,
 		f: {
@@ -210,46 +216,47 @@ const sandalStraps = {
 		let factReg = contracts[metaReg.addressByName('factories')];
 		const self = new Tilux({
 			w: `
-			<div class="" id="{$@id}">
+			<div class="" id="{$@id}" bind="factory_sel">
 				{>(regBase.advanced(@k))}
-				{>(kCandles[@metaReg.address].minimal)}
-				{>(sandalStrapsOwner(@k), @isOwner)}
-				<div class="layer">
-					<h3>User Functions</h3>
-					<div class="ss-panel">
-						<h3>Create a <strong>{$@crtProdFact}</strong> contract for  {>(ethVal(@crtProdPrice))}</h3>
-						{>(selectInp('factory_sel', @fc_n))} <br />
-						{>(txtInp('newProdName', 'New contract name...'))} <br />
-						{>(ethAddrInp('newProOwnerAddr', 'Owner address (optional)'))} <br />
-						<button id="btn-crt-prod">Create New...</button> <br />
-						{>(@selFact)}
-					</div>
-					<div class="ss-panel">
-						<h3>Add a factory</h3>
-						{>(ethAddrInp('newFactAddr', 'Factory address...'))}  <br />
-						<button id="add-factory-btn">Add Factory</button>  <br />
-						{>(@addFact)}
-					</div>
+				<div class="ss-flex-container">
+					{>(kCandles[@metaReg.address].minimal)}
 				</div>
-				{>(events(@k, formatSandalStrapsEvents))}					
+				{>(sandalStrapsOwner(@k), @isOwner)}
+				<h3 class="ss-title">Create a <strong>{$@crtProdFact}</strong> contract for  {>(ethVal(@crtProdPrice))}</h3>
+				<div id="selFactory">
+					<span class="inp-icon"><i class="fas fa-industry"></i></span>
+					{>(selectInp('factory_sel', @factNames))} <br>
+					{>(txtInp('newProdName', 'New contract name...'))} <br>
+					{>(ethAddrInp('newProOwnerAddr', 'Owner address (optional)'))}
+					<button id="btn-crt-prod">Create New...</button>
+					<div class="ss-flex-container">{>(@selFact)}</div>
+				</div>
+				<h3 class="ss-title">Add a factory</h3>
+				<div>
+					{>(ethAddrInp('newFactAddr', 'Factory address...'))} <button id="add-factory-btn">Add Factory</button>
+					<div class="ss-flex-container">{>(@addFact)}</div>
+				</div>
+				{>(events(@k, formatSandalStrapsEvents))}
 			</div>
 			`,
 			f: {
 				id: `sandalstraps-${k.address}-adv`,
 				k: k,
 				kAddr: k.address,
+				bind: 'factory_sel',
 				metaReg: metaReg,
 				factReg: factReg,
-				fc_n: [''].concat(registrar.getNames(factReg)),
+				factNames: [''].concat(registrar.getNames(factReg)),
 				addFactAddr: '',
 				crtProdFact: '',
 				crtProdName: '',
 				crtProdOwner: '',
 				crtProdPrice: new BigNumber(0),
 				get isOwner() {return k.owner() === Session.currAccount;},
-				get selFactAddr() {return !Session.fc_n ? '' : this.factReg.addressByName(Session.fc_n)},
+				get selFactAddr() {return !Session.factory_sel ? '' : this.factReg.addressByName(Session['factory_sel'])},
 				get selFact() { return this.selFactAddr ? kCandles[this.selFactAddr].minimal : ''; },
 				get addFact() { return Session.newFactAddr ? kCandles[Session.newFactAddr].minimal : ''; },
+				test: '',
 			},
 			s: {
 				'#add-factory-inp': {
@@ -288,7 +295,7 @@ const sandalStraps = {
 						{from: Session.currAccount, value: self.f.crtProdPrice, gas: 3000000}),
 				},
 			},
-		});
+		}, CACHE);
 
 		return self;
 	},

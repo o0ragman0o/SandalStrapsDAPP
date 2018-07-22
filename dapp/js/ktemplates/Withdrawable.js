@@ -52,8 +52,8 @@ const deposit = (k) => {
 const withdrawAll = (k) => {
 	return {
 		w: `<div>
-				{>(ethVal(@ethBal))}
 				<button id="waAll-btn">Withdraw All</button>
+				{>(ethVal(@ethBal))}
 			</div>`,
 		f: {
 			get ethBal() {
@@ -75,8 +75,11 @@ const withdrawAll = (k) => {
 
 const withdrawAllFor = (k) => {
 	const self = {
-		w: `{>(ethAddrInp('wdaf', "array of addresses to withdraw for..."))}
-			<button id="wdAllFor-btn">Withdraw All For</button>`,
+		w: `<div>
+				{>(ethAddrInp('wdaf', "array of addresses to withdraw for..."))}
+				<button id="wdAllFor-btn">Withdraw For</button>
+			</div>
+		`,
 		f: {
 			wdAllAddrs: '',
 		},
@@ -100,11 +103,11 @@ const withdrawAllFor = (k) => {
 const withdrawable = (k) => {
 	const self = {
 		w: `
-			<div id="{$@id}">
+			{>('<h3 class="ss-title">Deposit / Withdraw Functions</h3> <div> ', @canDeposit || @isWithdraw || @isWithdrawFor)}
 				{>(deposit(@k), @canDeposit)}
 				{>(withdrawAll(@k), @isWithdraw)}
 				{>(withdrawAllFor(@k), @isWithdrawFor)}
-			</div>
+			{>('</div>', @canDeposit || @isWithdraw || @isWithdrawFor)}
 		`,
 		f: {
 			id: `withdrawable-${k.address}`,

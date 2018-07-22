@@ -6,13 +6,16 @@ const OwningContract = web3.eth.contract(OwningABI);
 const owning = (k) => {
 	let self = new Tilux({
 		w:`
-			<div class="ss-panel">
-				<input id="newOwnedAddr-inp" value="{$@newOwnerAddr}"></input>
-				<button id="offerOwnership-btn">Offer Ownership To...</button>
-			</div>
-			<div class="ss-panel">			
-				<input id="receiveKaddr-inp" value="{$@receiveKAddr}"></input>
-				<button id="acceptOwnership-btn">Receive Ownership Of...</button>
+			<h3 class="ss-title">Owner</h3>
+			<div>
+				<div>
+					{>(ethAddrInp("offerOwnerAddr", "Propsed owner address"))}
+					<button id="offerOwnership-btn">Offer Ownership To...</button>
+				</div>
+				<div>			
+					{>(ethAddrInp("receiveKOwnership", "Contract address to own"))}
+					<button id="acceptOwnership-btn">Receive Ownership Of...</button>
+				</div>
 			</div>
 		`,
 		f: {

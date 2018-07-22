@@ -89,7 +89,7 @@ function Lux (target = {}, parent) {
 const Session = Lux();
 // const Session = new Lux();
 
-// Hods a cache of constructed Tilux objects
+// Holds a cache of constructed Tilux objects
 const cache = new Proxy({},
 	{
 		get(target, key) { if(key in target) return target[key];}
@@ -111,7 +111,7 @@ const renderEvent = new Event('render');
 const t_rplc = {'@':'c.f.','{$':'${','{#':'${Tilux.t','{>':'${Tilux.l'};
 
 let idNum = 0;
-
+const CACHE = true;
 const sparks = [];
 
 function newId(prefix = "tlx_") {
@@ -120,7 +120,7 @@ function newId(prefix = "tlx_") {
 
 // The 'candle template' rendering class
 class Tilux {
-	constructor(candle = {}) {
+	constructor(candle = {}, toCache) {
 		// Return candle from cache if it already exists
 		if(!!candle.f && !!candle.f.id && !!cache[candle.f.id]) return cache[candle.f.id];
 		let lit = Lux();
@@ -128,6 +128,7 @@ class Tilux {
 		lit.f = candle.f || {};
 		lit.s = candle.s || undefined;
 		lit.f.id = lit.f.id || newId();
+		if(toCache) cache[lit.f.id] = lit;
 		lit.watch = (lux, key) => {
 			lux.gaze(key, ()=>{Tilux.render(`#${lit.f.id}`, lit)})
 		}
@@ -136,6 +137,7 @@ class Tilux {
 		// Bind rendering to data in the Session Lux 
 		if('bind' in lit.f) lit.f.bind.split(' ').forEach(
 			(b)=>{ Session.gaze(b, ()=>{Tilux.render(`#${lit.f.id}`, lit)}); }
+			// (b)=>{ Session.gaze(b, ()=>{Tilux.render(`#${lit.f.id}`, lit)}); }
 		);
 		if('created' in lit.f) lit.f.created.apply(lit);
 		return lit;
@@ -168,11 +170,11 @@ class Tilux {
 
 	// Recursive template rendering. i.e, {#([list,...],[wrapper...])}
 	// `a` is an array of data to be wrapped. Nested arrays are wrapped by `l[nesting depth]`
-	// `l` is an optional array of wrapping tag names such as '[li]', '[tr, tr]'
-	static t(a, l=['']) {
+	// `w` is an optional array of wrapping tag names such as '[li]', '[tr, tr]'
+	static t(a, w=['']) {
 		return a.map(
 			(e)=>{
-				return `${!!l[0]?`<${l[0]}>`:``}${!e.map?e:this.t(l.slice(1),e)}${!!l[0]?`</${l[0]}>`:``}`
+				return `${!!w[0]?`<${w[0]}>`:``}${!e.map?e:this.t(w.slice(1),e)}${!!w[0]?`</${w[0]}>`:``}`
 			}).join('')
 	}
 	

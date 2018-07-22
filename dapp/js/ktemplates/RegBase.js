@@ -9,13 +9,13 @@ const formatRegBaseEvents = (log) => {
 	switch (log.event) {
 		case 'ChangeResource': return Tilux.l(`
 				<h4>Changed Resource</h4>
-				Resource: ${utf8(log.args._resource)}<br />
+				Resource: ${utf8(log.args._resource)}<br>
 				`);
 			break;
 		case 'ChangedOwner': return Tilux.l(`
 				<h4>Changed Owner</h4>
-				<label class="evnt-label">Old Owner</label> {>(ethAddrSml('${log.args._oldOwner}'))}<br />
-				<label class="evnt-label">New Owner</label> {>(ethAddrSml('${log.args._newOwner}'))}<br />
+				<label class="evnt-label">Old Owner</label> {>(ethAddrSml('${log.args._oldOwner}'))}<br>
+				<label class="evnt-label">New Owner</label> {>(ethAddrSml('${log.args._newOwner}'))}<br>
 			`);
 			break;
 		case 'ChangeOwnerTo': return Tilux.l(`
@@ -35,15 +35,12 @@ const formatRegBaseEvents = (log) => {
 const regOwned = (k) => {
 	let self = {
 		w: `
-			<h3>RegBase Owner Functions</h3>
-			{>(owned(@k))}
-			<div class="ss-panel">
-				{>(ethHexInp(@res))}
-				<button id="change-res-btn">Change Resource</button>
-			</div>
-			<div>
+				{>(owned(@k))}
+				<h3 class="ss-title">Change Resource</h3>
+				<div>
+				{>(ethHexInp(@res))} <button id="change-res-btn">Change Resource</button><br>
 				<button id="destroy-btn">Destroy Contract</button>
-			</div>
+				</div>
 		`,
 		f: {
 			k: k,
@@ -103,7 +100,7 @@ const regBase = {
 		if(k) return {
 			w: `
 				<div id="{$@id}" class="ss-button" onclick="{$@click}('{$@kAddr}')">
-					{>(idicon(@kAddr))
+					<div calss="inline">{>(idicon(@kAddr))</div>
 					<div class="inline">
 						<div class="rb-regname-sml">{$@k.regname}</div>
 						<div class="rb-version-sml darkest">{$@k.version}</div>
@@ -125,7 +122,7 @@ const regBase = {
 	advanced: (k) => {
 		if(k) {
 			const self = new Tilux({
-				w: `<div id="{$@id}" class="layer" >
+				w: `<div id="{$@id}" class="-layer" >
 						<div class="regBase-adv">
 							{>(idicon(@kAddr, 7, 'rb-idicon'))}
 							<div class="rb-title"><span class="rb-regname">{$@regName}</span>
@@ -135,13 +132,11 @@ const regBase = {
 							<div class="rb-addr ss-addr-sml k-addr"><i class="fas fa-fw fa-file-alt"></i> {>(addrLink(@kAddr))}</div>
 							<div class="rb-owner ss-addr-sml u-addr"><i class="fas fa-fw fa-user"></i> {>(addrLink(@owner))}</div>
 							<div class="rb-bal js-end as-end">{>(ethVal(@ethBal))}</div>
-							<div class="rb-ext">
-								{>(withdrawable(@k))}
-								{>(regOwned(@k), @isOwner)}
-								{>(owning(@k), @isOwner)}
-								{>(newOwner(@k),  @isNewOwner)}
-							</div>
 						</div>
+							{>(withdrawable(@k))}
+							{>(regOwned(@k), @isOwner)}
+							{>(owning(@k), @isOwner)}
+							{>(newOwner(@k),  @isNewOwner)}
 					</div>
 					`,
 				f: {
@@ -151,8 +146,8 @@ const regBase = {
 					regName: 'regName' in k ? utf8(k.regName()) : 'Contract is not SandalStraps compliant',
 					version: 'VERSION' in k ? utf8(k.VERSION()) : 'No version found',
 					ethBal: web3.eth.getBalance(k.address),
-					s_owning: owning(k),
-					s_newOwner: newOwner(k),
+					// s_owning: owning(k),
+					// s_newOwner: newOwner(k),
 					get owner() {return 'owner' in k ? checksumAddr(k.owner()) : 'Contract is not ownable'},
 					get isOwner() {return 'owner' in k ? k.owner() === Session.currAccount : false;},
 					get isNewOwner() {return 'newOwner' in k ? k.newOwner() === Session.currAccount : false;},
@@ -162,12 +157,11 @@ const regBase = {
 				s: {
 					"#docsLink": {
 						click() {
-							// modal.show(resources[self.f.version].docPath);
 							getDoc(resources[self.f.version].docPath);
 						}
 					}
 				}
-			});
+			}, CACHE);
 			return self;
 		}
 	},

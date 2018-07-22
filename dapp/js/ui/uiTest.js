@@ -2,196 +2,6 @@
 // module "uiTest.js"
 
 /*******************************************************************\
-
-Tilux JS 
-file:	tilux.js
-ver:	0.1.0
-author: Darryl Morris
-email:  o0ragman0o AT gmail.com
-updated:1-Jul-2018
-copyright: 2018
-
-Release Notes:
-* More performat event attachment
-* New: Render Event. Synchronously when event attachment is complete
-* New: `cache` used to cache candles
-* New: `cache.get(id, flame)` and `cache.set(id, flame, value)` for
-setting flamedata of cached candles 
-* `gaze` binding function moved from Tilux to Lux
-* `cbs` now an object
-* Callbacks are async'd throught `setTimeout()`
-* `const Session` lux provision to transport inter-Lux bindings
-* Restructured callback regeime which no longer requires parent bubbleup
-
-TODO:
-* Implement selection reestablishment across re-renders
-
-\*******************************************************************/
-	
-
-// let cbId = 0;
-
-
-// // Proxy handler for nested reactive objects
-// const luxHandler = {
-// 	has: (target, key) => {
-// 		// Pseudo property '__isLux' used to prevent self nesting proxies
-// 		if (key === "__isLux") return true;
-// 		return key in target;
-// 	},
-
-// 	get: (target, key) => {
-// 		// Make parent private
-// 		if (key === '__p') return;
-// 		// Don't proxy callback objects
-// 		if (key === '__cbs') {
-// 			if(!('__cbs' in target)) target.__cbs = {};
-// 			return target.__cbs;
-// 		}
-// 		// Cache return object/value
-// 		let lit = target[key];
-// 		// Return primitives directly
-// 		if (typeof lit !== 'object' || lit === null) return lit;
-// 		// If key does not begin with 's_', assign parent to bubble-up the chain.
-// 		// 's_' supresses bubble-up  
-// 		// if (!key.startsWith('s_')) lit.__p = target;
-// 		// Return if lit is already a Lux object to prevent self nesting proxies
-// 		if ('__isLux' in lit) return lit;
-// 		// Create new Lux object for lit and return it
-// 		return new Proxy(lit, luxHandler);
-// 	},
-
-// 	set: (target, key, value) => {
-// 		target[key] = value;
-// 		// Prevent manual setting of parent or callbacks objects
-// 		if(key === '__p' || key === '__cbs') return true;
-// 		// Create and attach callback container if one doesn't exist
-// 		if(!('__cbs' in target)) target.__cbs = {};
-// 		let cbs = target[key].__cbs || target.__cbs;
-// 		// run asynchronous callbacks
-// 		for(let cb in cbs[key]) { 
-// 			setTimeout(	(cb)=>{
-// 					cb(value, key, target)
-// 				},0, cbs[key][cb]);
-// 		};
-// 		return true;
-// 	},
-// }
-
-
-// // A reactive object class
-// class Lux {
-// 	constructor(target = {}) {
-// 		if(typeof target !== "object") target = {value: target};
-// 		target._lId = Symbol('Lux Id');
-// 		target.gaze = Lux.prototype.gaze;
-// 		return new Proxy(target, luxHandler);
-// 	}
-
-// 	gaze(lux, key, callback){
-// 		let cbs = typeof lux[key] === "object" ? lux[key].__cbs : lux.__cbs;
-// 		if(!(key in cbs)) cbs[key] = {};
-// 		cbs[key][++cbId] = callback;
-// 		return cbId;
-// 	}
-// }
-
-// // Session Lux object to store data, bindings and callbacks 
-// const Session = new Lux();
-
-// // Hods a cache of constructed Tilux objects
-// const cache = new Proxy({},
-// 	{
-// 		get(target, key) { if(key in target) return target[key];}
-// 	});
-
-// cache.get = function(id, flame) {
-// 	return cache[id] ? cache[id].f[flame] : undefined;	
-// }
-
-// cache.set = function(id, flame, value) {
-// 	cache[id].f[flame] = value;
-// }
-
-// // A custom render event synchronously dispatched when a candle is rendered to
-// // the DOM and all other events have been attached
-// const renderEvent = new Event('render');
-
-// // Template literal replacments look-up object
-// const t_rplc = {'@':'c.f.','{$':'${','{#':'${Tilux.t','{>':'${Tilux.l'};
-
-// let idNum = 0;
-
-// const sparks = [];
-
-// function newId(prefix = "tlx_") {
-// 	return prefix + idNum++;
-// }
-
-// // The 'candle template' rendering class
-// class Tilux {
-// 	constructor(candle = {}) {
-// 		// Return candle from cache if it already exists
-// 		if(!!candle.f && !!candle.f.id && !!cache[candle.f.id]) return cache[candle.f.id];
-// 		this.w = candle.w || '';
-// 		this.f = candle.f || {};
-// 		this.s = candle.s || undefined;
-// 		let lit = new Lux(this);
-// 		lit.f.id = candle.f.id || newId();
-// 		// React to changes in it's own flame
-// 		lit.gaze(lit, 'f', ()=>{Tilux.render(`#${lit.f.id}`, lit);});
-// 		// Bind rendering to data in the Session Lux 
-// 		if('bind' in lit.f) lit.f.bind.split(' ').forEach(
-// 			(b)=>{ lit.gaze(Session, b, ()=>{Tilux.render(`#${lit.f.id}`, lit)}); }
-// 		);
-// 		if(lit.f.id) cache[lit.f.id] = lit;
-// 		if(!!lit.f.created)	lit.f.created.apply(lit);
-// 		return lit;
-// 	}
-
-// 	// Renders a template to a collection of HTML elements
-// 	static render(s, c) {
-// 		let activeId = document.activeElement.id;
-// 		document.querySelectorAll(s).forEach( root => {
-// 			let sibling = root.previousSibling;
-// 			let parent = root.parentElement;
-// 			sparks.length = 0;
-// 			root.outerHTML = this.l(c);
-// 			root = sibling.nextSibling;
-// 			sparks.forEach((spark) => {
-// 				for(let selector in spark){
-// 					// root.querySelectorAll(selector).forEach( node => {
-// 					parent.querySelectorAll(selector).forEach( node => {
-// 							for(let event in spark[selector]) {
-// 								node.addEventListener(event, spark[selector][event]);
-// 							}
-// 							node.dispatchEvent(renderEvent);
-// 						}
-// 					);
-// 				}
-// 			})
-// 		});
-// 		if(activeId !== document.activeElement.id) window[activeId].focus();
-// 	}
-
-// 	// Recursive template rendering. i.e, {#([wrapper...],[list,...])}
-// 	static t(l,a) {
-// 		return a.map(
-// 			(e)=>{
-// 				return `${!!l[0]?`<${l[0]}>`:``}${!e.map?e:this.t(l.slice(1),e)}${!!l[0]?`</${l[0]}>`:``}`
-// 			}).join('')
-// 	}
-	
-// 	// Template literal parser/compiler. i.e, {>(trueCandle, bool, falseCandle)}
-// 	static l(c, d=true, e='') {
-// 		c = d ? c : e;
-// 		if(typeof c !== 'object') c = {w:c || ''};
-// 		if(c.s) sparks.push(c.s);
-// 		// if(c.s) sparks[sparks.length - 1].push(c.s);
-// 		return Function('c', `"use strict"; return \`${c.w.replace(/@|{\$|{#|{>/g, f=>t_rplc[f])}\`;`)(c)
-// 	}
-// }
-
 /*******************************************************************\
 
 Tilux JS 
@@ -221,6 +31,7 @@ TODO:
 \*******************************************************************/
 	
 
+
 let cbId = 0;
 
 // Proxy handler for nested reactive objects
@@ -233,7 +44,9 @@ const luxHandler = {
 
 	get(target, key) {
 		if(key === "__cbs") return target[key];
-		if(key === "gaze") return (key, callback)=>{
+		if(key === "gaze") 
+			// `gaze()` is a proxy trapped function and doesn't show as property of a Lux object (not ideal)
+			return (key, callback)=>{
 			if(!('__cbs' in target)) target.__cbs = {};
 			if(!(key in target.__cbs)) target.__cbs[key] = {};
 			target.__cbs[key][++cbId] = callback;
@@ -241,7 +54,7 @@ const luxHandler = {
 		}
 
 		target._k = key;
-		return target[key] ? Lux(target[key], target) : undefined;
+		return target[key] !== undefined ? Lux(target[key], target) : undefined;
 	},
 
 	set(target, key, value) {
@@ -250,19 +63,16 @@ const luxHandler = {
 			return true;
 		}
 		target[key] = Lux(value);
+		target._k = key;
 		// run asynchronous callbacks
 		do {
 			if('__cbs' in target) {
-				// let cbs = target.__cbs[target._k];
-				let cbs = target.__cbs[key];
+				let cbs = target.__cbs[target._k];
 				for(let cb in cbs) {
-					cbs[cb](value, key, target);
+					setTimeout(()=>{
+						cbs[cb](value, key, target);});
 				}
-				// setTimeout(	(cb)=>{
-				// 		cb(value, key, target)
-				// 	}, 0);
 			}
-			// key = target;
 			target = target._p;
 		} while(target);			
 		return true;
@@ -272,7 +82,7 @@ const luxHandler = {
 
 // A reactive object class
 function Lux (target = {}, parent) {
-	if(typeof target !== 'object') return target;
+	if(typeof target !== 'object' || target == null) return target;
 	target._p = parent;
 	if('__isLux' in target) return target;
 	return new Proxy(target, luxHandler);
@@ -283,7 +93,7 @@ function Lux (target = {}, parent) {
 const Session = Lux();
 // const Session = new Lux();
 
-// Hods a cache of constructed Tilux objects
+// Holds a cache of constructed Tilux objects
 const cache = new Proxy({},
 	{
 		get(target, key) { if(key in target) return target[key];}
@@ -318,17 +128,20 @@ class Tilux {
 		// Return candle from cache if it already exists
 		if(!!candle.f && !!candle.f.id && !!cache[candle.f.id]) return cache[candle.f.id];
 		let lit = Lux();
-		// let lit = new Lux();
-		let id = candle.f.id || newId();
 		lit.w = candle.w || '';
 		lit.f = candle.f || {};
 		lit.s = candle.s || undefined;
-		lit.f.id = id || newId();
+		if(lit.f.id) cache[lit.f.id] = lit;
+		lit.f.id = lit.f.id || newId();
+		lit.watch = (lux, key) => {
+			lux.gaze(key, ()=>{Tilux.render(`#${lit.f.id}`, lit)})
+		}
 		// React to changes in it's own flame
-		lit.gaze('f', ()=>{Tilux.render(`#${id}`, lit);});
+		lit.gaze('f', ()=>{Tilux.render(`#${lit.f.id}`, lit);});
 		// Bind rendering to data in the Session Lux 
 		if('bind' in lit.f) lit.f.bind.split(' ').forEach(
-			(b)=>{ Session.gaze(b, ()=>{Tilux.render(`#${id}`, lit)}); }
+			(b)=>{ Session.gaze(b, ()=>{Tilux.render(`#${lit.f.id}`, lit)}); }
+			// (b)=>{ Session.gaze(b, ()=>{Tilux.render(`#${lit.f.id}`, lit)}); }
 		);
 		if('created' in lit.f) lit.f.created.apply(lit);
 		return lit;
@@ -345,8 +158,8 @@ class Tilux {
 			root = sibling.nextSibling;
 			sparks.forEach((spark) => {
 				for(let selector in spark){
-					root.querySelectorAll(selector).forEach( node => {
-					// parent.querySelectorAll(selector).forEach( node => {
+					// root.querySelectorAll(selector).forEach( node => {
+					parent.querySelectorAll(selector).forEach( node => {
 							for(let event in spark[selector]) {
 								if(event != '_k') node.addEventListener(event, spark[selector][event]);
 							}
@@ -359,13 +172,13 @@ class Tilux {
 		if(activeId !== document.activeElement.id) window[activeId].focus();
 	}
 
-	// Recursive template rendering. i.e, {#([wrapper...],[list,...])}
-	// `l` is an array of wrapping tag names such as '[li]', '[tr, tr]'
+	// Recursive template rendering. i.e, {#([list,...],[wrapper...])}
 	// `a` is an array of data to be wrapped. Nested arrays are wrapped by `l[nesting depth]`
-	static t(l,a) {
+	// `w` is an optional array of wrapping tag names such as '[li]', '[tr, tr]'
+	static t(a, w=['']) {
 		return a.map(
 			(e)=>{
-				return `${!!l[0]?`<${l[0]}>`:``}${!e.map?e:this.t(l.slice(1),e)}${!!l[0]?`</${l[0]}>`:``}`
+				return `${!!w[0]?`<${w[0]}>`:``}${!e.map?e:this.t(w.slice(1),e)}${!!w[0]?`</${w[0]}>`:``}`
 			}).join('')
 	}
 	
@@ -377,6 +190,7 @@ class Tilux {
 		return Function('c', `"use strict"; return \`${c.w.replace(/@|{\$|{#|{>/g, f=>t_rplc[f])}\`;`)(c)
 	}
 }
+
 
 
 $import ("js/lib/blockies.js");
@@ -484,19 +298,21 @@ const _ethAddrInp = (bind, placeHolder = "Enter address 0x123aBc...") => {
 }
 
 const _ethHexInp = (bind, placeHolder = "0x...") => {
-	let id = newId('hexInp_');
+	// let id = newId('hexInp_');
 	const self = {
-		w: `<span id="{$@id}">
+		// w: `<span id="{$@id}">
+		w: `<span>
 				<span class="fs14 fa-fw">0x</span>
 				<input id="{$@id}_inp" class="ss-input ss-addr bytes32" placeholder="${placeHolder}" pattern="0x[0-9|a-f|A-F]{64}">
 			</span>`,
 		f: {
-			id: id,
+			// id: id,
 			bindTo: bind,
 			get value() { return Session[self.f.bindTo] || ""; },
 		},
 		s: {
-			[`#${id}_inp`]: {
+			[`input`]: {
+			// [`#${id}_inp`]: {
 				input(event) { Session[self.f.bindTo] = event.target.value; },
 				render(event) { event.target.value = self.f.value }
 			},
@@ -550,21 +366,23 @@ const _textAreaInp = (bind, placeHolder="Enter test...") => {
 }
 
 const _range = (bind, min="0", max="100") => {
-	let id = newId("range_");
+	// let id = newId("range_");
 	const self = new Tilux({
-		w: `<input id="${id}" bind="{$@bind}" type="range" min="${min}" max="${max}" >
+		// w: `<input id="${id}" bind="{$@bind}" type="range" min="${min}" max="${max}" >
+		w: `<input bind="{$@bind}" type="range" min="${min}" max="${max}" >
 		`,
 		f: {
-			id: id,
+			// id: id,
 			bindto: bind,
 			get value() { return Session[self.f.bind] || ''; },
 			created() {
-				Session.gaze(bind, (value)=>{window[id].value = value})
+				// Session.gaze(bind, (value)=>{self.value = value})
 			},
 
 		},
 		s: {
-			[`#${id}`]: {
+			[`input`]: {
+			// [`#${id}`]: {
 				input(event) { Session[self.f.bindto] = event.target.value; },
 				render(event) {	event.target.value = self.f.value; }
 			},

@@ -26,9 +26,12 @@ const formatUnknownEvents = (log, k) => {
 const events = (k, evTmplt) => {
 	let self = new Tilux({
 		w: `
-			<div id="{$@id}" class="layer">
-				<h3>Events</h3>
-				{#([], @events)}
+			<div id="{$@id}">
+				<h3 class="ss-title">Events</h3>
+				<div>
+					{>(txtInp("evntFilter", "Filter"))}
+					{#(@events)}
+				</div>
 			</div>
 		`,
 		f: {
@@ -37,13 +40,17 @@ const events = (k, evTmplt) => {
 			evTmplt: evTmplt,
 			events: [['Waiting for events logs...']],
 		},
-	});
+	}, CACHE);
+
+	cache['k-events'] = self;
 
     k.events.get(
 		(err, logs)=>{
-			if(logs) self.f.events = logs.reverse().map(
-				log => {return evTmplt(log, k) + eventInfo(log)}
-			)
+			if(logs) {
+				self.f.events = logs.reverse().map(
+					log => {return evTmplt(log, k) + eventInfo(log)}
+				)
+    		}
     	}
     );
 

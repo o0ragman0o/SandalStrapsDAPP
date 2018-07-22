@@ -29,7 +29,7 @@ const searchForm = (searchFor = '') => {
 				},
 			},
 		},
-	});
+	}, CACHE);
 
 	return self;
 }

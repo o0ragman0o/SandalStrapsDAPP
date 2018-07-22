@@ -57,15 +57,20 @@ const registrar = {
 			w: `
 				<div class="" id="{$@id}">
 					{>(regBase.advanced(@k))}
-					<div class="layer">
+					<h3 class="ss-title">Register A Contract</h3>
+					<div>
 						{>(ethAddrInp('newRegAddr', 'Contract Address'))}
 						<button id="register-btn">Register Contract</button><br />
-						* Note: This is an owned public registrar.<br />  
-						Anyone can register a contract and remove their own registered contract.<br />
-						The registrar owner may remove or replace any registered contract.
+						<div class="notice">
+							Note: This is an owned public registrar. Anyone can register a contract and remove their own registered contract.<br />
+							The registrar owner may remove or replace any registered contract.
+						</div>
 					</div>
-					<div class="layer ss-flex-container">
-						{#(@registered)}
+					<h3 class="ss-title">Registered Contracts</h3>
+					<div>
+						<div class="ss-flex-container">
+							{#(@registered)}
+						</div>
 					</div>
 					{>(events(@k, formatRegistrarEvents))}
 				</div>
@@ -86,7 +91,7 @@ const registrar = {
 					"click": () => { self.f.k.register(self.f.rAddr,{from: currAccount, gas: 100000}); },
 				},
 			}
-		})
+		}, CACHE)
 		return self;
 	},
 }

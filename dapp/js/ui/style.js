@@ -102,6 +102,15 @@ let ss_style = new Tilux({
 				justify-self: end;
 			}
 
+			.ai-center {
+				display: flex
+				align-items: center;
+			}
+
+			.hidden {
+				display: none;
+			}
+
 			.layout {
 				height: 100%
 				display: grid;
@@ -116,7 +125,7 @@ let ss_style = new Tilux({
 
 			.main{
 				width: 90%;
-				max-width: 1310px;
+				max-width: 1080px;
 				height: 100%;
 			}
 
@@ -215,16 +224,16 @@ let ss_style = new Tilux({
 			}
 
 			.rb-regname {
-				color: {$@darkest};
 				font-size: 1.4em;
 				text-transform: uppercase;
+				color: {$@darkest};
 				text-shadow: 0.5px 0.5px 2px {$@dark};			
 			}
 
 			.rb-regname-sml {
-				color: {$@darkest};
 				font-size: 1.0em;
 				text-transform: uppercase;
+				color: {$@darkest};
 				text-shadow: 0.5px 0.5px 2px {$@dark};			
 			}
 
@@ -256,11 +265,11 @@ let ss_style = new Tilux({
 			}
 
 			.layer {
+				padding: 13px 15.6px;
 				border-width: 0 0 4px 0;
 				border-style: solid;
 				border-color: {$@compliment};
 				box-shadow: 0px 0px 5px -1px {$@darkest};
-				padding: 13px 15.6px;
 			}
 
 			.inline {
@@ -358,17 +367,18 @@ let ss_style = new Tilux({
 			.ss-select,
 			.ss-row
 			{
+				/*display: flex;*/
 				cursor: pointer;
-				border-radius: 4px;
-				border-color: {$@lightest};
 				border-width: 1.4px;
 				border-style: solid;
-				background-color: {$@light};
 				padding: 13px 15.6px;
 				margin: 9px;
 			    transition-duration: 0.3s;
 			    vertical-align: middle;
 			    align-items: center;
+				border-radius: 4px;
+				border-color: {$@lightest};
+				background-color: {$@light};
 			}
 
 			button,
@@ -396,9 +406,9 @@ let ss_style = new Tilux({
 			textarea
 			{
 				cursor: pointer;
+				width: 372px
 				color: {$@darkest};
 				box-shadow: 0.5px 0.5px 5px {$@darkest} inset;
-				width: 372px
 			}
 
 			textarea
@@ -414,9 +424,9 @@ let ss_style = new Tilux({
 			input:focus,
 			select:focus
 			{
-				border-color: {$@light};
 				border-width: 1.4px;
 				border-style: solid;
+				border-color: {$@light};
 				background-color: {$@base};
 				box-shadow: 0.5px 0.5px 2px {$@darkest} inset;
 			}
@@ -428,7 +438,7 @@ let ss_style = new Tilux({
 
 			input:valid
 			{
-//				background-color: {$@valid};				
+/*				background-color: {$@valid};				*/
 			}
 
 			button:hover,
@@ -452,20 +462,58 @@ let ss_style = new Tilux({
 			}
 
 			.ss-panel {
-				border-color: {$@lightest};
 				border-width: 1.4px;
 				border-style: solid;				
 				border-radius: 4px;
+				margin: 12px;
+				/*padding: 6px;*/
+				border-color: {$@lightest};
+			}
+
+			.ss-panel h3 {
+				margin-top: 0px;
+				padding: 6px;
+				border-radius: 4px 4px 0px 0px;
+				font-size: 0.9rem;
+				text-transform: uppercase;
+				background-color: {$@darkest};
+				color: {$@lightest};
+			}
+
+			h3.ss-title {
+				margin: 0px 16px;
+				padding: 6px;
+				border-radius: 4px 4px 0px 0px;
+				font-size: 0.9rem;
+				text-transform: uppercase;
+				background-color: {$@darkest};
+				color: {$@lightest};
+			}
+
+			.ss-title + div {
+				margin: 0px 16px 16px 16px;
+				border-width: 0 1.4px 1.4px 1.4px;
+				border-style: solid;
+				border-radius: 4px;
+				border-radius: 0px 0px 4px 4px;
+				padding: 0px 6px;
+				border-color: {$@lightest};
+			}
+
+			.ss-title + div > .notice {
+				background-color: {$@dark};
+				padding: 6px;
+				border-radius: 0px 0px 4px 4px;
 			}
 
 			.idicon {
 				display: inline-block;
 				border-width: 2.2px;
-				border-color: {$@lightest};
 				border-style: solid;
 				border-radius: 100%;
 				width: auto;
 			    vertical-align: middle;
+				border-color: {$@lightest};
 			}
 
 			.idicon-sml {
@@ -475,12 +523,6 @@ let ss_style = new Tilux({
 
 			.idicon-tny {
 				border-width: 1px;
-			}
-
-			.input-icon {
-				display: inline-block;
-				width: 35px;
-				// justify-items: center;
 			}
 
 			button + input,
@@ -501,12 +543,11 @@ let ss_style = new Tilux({
 			}
 
 			.modal-inner {
-				background-color:{$@lightest};				
 				font-size: 1.4em;
-				color: {$@darkest};
-				margin: 150px;
+				margin: 100px;
 				padding: 20px;
-				height: calc(100% - 300px);
+				height: calc(100% - 200px);
+				background-color:{$@lightest};				
 			}
 
 			.modal-content {
@@ -523,7 +564,27 @@ let ss_style = new Tilux({
 			.bytes32 {
 				width: 570px;				
 			}
+
+			.inp-icon {
+				display: inline-flex;
+				width: 35px;
+				justify-content: center;
+			}
+
+			code {
+				padding: 2px;
+				background-color:{$@light};
+			}
+
+			pre {
+				max-width: 98%;
+				padding: 6px;
+				overflow: hidden;
+				background-color:{$@light};
+				box-shadow: 0.5px 0.5px 5px {$@dark} inset;	
+			}
+
 		</style>
 		`,
-	}
+	}, CACHE
 )

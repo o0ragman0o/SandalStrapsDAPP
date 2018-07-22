@@ -6,7 +6,7 @@ const footer = new Tilux({
 		</footer>
 		`,
 	f: {}
-})
+}, CACHE)
 
 
 console.log("ran footer.js");

@@ -29,23 +29,32 @@ const erc20Form = (k) => {
 	const self = {
 		w: `
 		<div>
-			<h2><i class="fas fa-fw fa-dot-circle"></i>{$@tokBal}</h2>
-			<h3>{$@name} {$@symbol}</h3>
-			<i class="fas fa-fw fa-dot-circle"></i>{$@supply} Total Supply
-			<h3>Transfer</h3>
-			{>(ethAddrInp('erc20ToAddr', 'To address...'))}<br />
-			{>(ethValInp('erc20ToVal', 'Value in ether...'))}<br />
-			<button id="transfer-btn">Transfer</button>
-			<h3>Transfer From</h3>
-			<p><i class="fas fa-fw fa-dot-circle"></i>{$@allowance(@allowFrom)} Approved from {$@allowFrom}</p>
-			{>(ethAddrInp('erc20FromAddr', 'From address...'))}<br />
-			{>(ethAddrInp('erc20FromToAddr', 'To address...'))}<br />
-			{>(ethValInp('erc20AllowedVal', 'Value in ether...'))}<br />
-			<button id="transferFrom-btn">Transfer</button>
-			<h3>Approve</h3>
-			{>(ethAddrInp('erc20ApprAddr', 'To address...'))}<br />
-			{>(ethValInp('erc20ApprVal', 'Value in ether...'))}<br />
-			<button id="approve-btn">Approve</button>
+			<h3 class="ss-title">ERC20</h3>
+			<div>
+				<h2>{$@name} {$@symbol}</h2>
+				<h2><span class="inp-icon"><i class="fas fa-fw fa-dot-circle"></i></span>{$@tokBal}</h2>
+				<i class="fas fa-fw fa-dot-circle"></i>{$@supply} Total Supply
+			</div>
+			<h3 class="ss-title">Transfer</h3>
+			<div>
+				{>(ethAddrInp('erc20ToAddr', 'To address...'))}<br />
+				{>(ethValInp('erc20ToVal', 'Value in ether...'))}<br />
+				<button id="transfer-btn">Transfer</button>
+			</div>
+			<h3 class="ss-title">Transfer From</h3>
+			<div>
+				<p><i class="fas fa-fw fa-dot-circle"></i>{$@allowance(@allowFrom)} Approved from {$@allowFrom}</p>
+				{>(ethAddrInp('erc20FromAddr', 'From address...'))}<br />
+				{>(ethAddrInp('erc20FromToAddr', 'To address...'))}<br />
+				{>(ethValInp('erc20AllowedVal', 'Value in ether...'))}<br />
+				<button id="transferFrom-btn">Transfer</button>
+			</div>
+			<h3 class="ss-title">Approve</h3>
+			<div>
+				{>(ethAddrInp('erc20ApprAddr', 'To address...'))}<br />
+				{>(ethValInp('erc20ApprVal', 'Value in ether...'))}<br />
+				<button id="approve-btn">Approve</button>
+			</div>
 		</div>
 		`,
 		f: {
@@ -143,7 +152,7 @@ const erc20 = {
 			f: {
 				k: k,
 			}
-		});
+		}, CACHE);
 		return self;
 	}
 }

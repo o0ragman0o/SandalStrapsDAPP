@@ -39,20 +39,26 @@ const stringsMap = {
 		const self =  new Tilux({
 			w: `<div id="{$@id}">
 					{>(regBase.advanced(@k))}
-					<div class="layer">
-						<input id="get-hash" placeholder="Key" class="mono" type="text" value="{$@hash}"></input>
-						<button id="clear-hsh-btn">Clear Hash</button>
-						<textarea id="string" placeholder="Enter string to store">{$@string}</textarea><br />
+					<h3 class="ss-title">Lookup / Store / Clear</h3>
+					<div>
+						{>(ethHexInp('@hash'))}
+						<button id="clear-hsh-btn">Clear By Hash</button><br />
+						{>(textAreaInp('@string',"Enter string to store"))}<br />
 						<button id="store-btn">Store</button>
-						<button id="clear-str-btn">Clear String</button>
+						<button id="clear-str-btn">Clear By String</button>
+						<div class="notice">
+							Only the contract owner or string setter can clear an entry.
+						</div>
 					</div>
 					{>(events(@k, formatStringsMapEvents))}
 				</div>`,
 			f: {
+				id: `stringsMap-${k.address}-adv`,
 				k: k,
 				kAddr: k.address,
 				hash: '',
 				string: '',
+
 			},
 			s: {
 				"#get-hash": {
@@ -82,7 +88,7 @@ const stringsMap = {
 					}
 				},
 			}
-		});
+		}, CACHE);
 
 		return self;
 	}

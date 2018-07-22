@@ -8,10 +8,11 @@ const InvoiceContract = web3.eth.contract(InvoiceABI);
 
 const refundee = (k) => {
 	const self = {
-		w: `<div class="ss-panel">
+		w: `<h3 class="ss-title">Change Refund Address</h3>
+			<div>
 				<input id="refundee-inp" type="text" placeholder="New refund address" value="{$@rfAddrs}" />
 				<button id="refundee-btn">Change Refund Address</button>
-			<div>
+			</div>
 		`,
 		f: {
 			k: k,
@@ -32,7 +33,10 @@ const refundee = (k) => {
 
 const changeInvoiceRes = (k) => {
 	const self = {
-		w: `<input id="change-res-inp" value="{$@changeResInp}"" placeholder="Resource Hash"/><button id="change-res-btn">Change Resource</button>
+		w: `<h3 class="ss-title">Change Resource</h3>
+			<div>
+				{>(ethHexInp('changeInvRes', "Resource Hash"))} <button id="change-res-btn">Change Resource</button>
+			</div>
 		`,
 		f: {
 			k: k,
@@ -77,25 +81,19 @@ const invoice = {
 	advanced: (k) => {
 		const self = new Tilux({
 			w: `<div id="{$@id}">
-					<div class="regBase-adv">
-						<img class="rb-idicon idicon" src="{$blockie(@kAddr)}" />
-						<div class="rb-title"><span class="rb-regname">{$@regName}</span> <span class="rb-version">{$@version}</div>
-						<div class="rb-addr ss-addr-sml k-addr"><i class="fas fa-fw fa-file-alt"></i> <a href="https://etherscan.io/address/{$@kAddr}" target="_blank">{$@kAddr}</a></div>
-						<div class="rb-owner ss-addr-sml u-addr"><i class="fas fa-fw fa-user"></i> <a href="https://etherscan.io/address/{$@owner}" target="_blank">{$@owner}</a></div>
-						<div class="rb-ext">
-							{>(withdrawable(@k))}
-						</div>
-					</div>
-					<div class="layer">
-						<label>Amount Due</label>{$ethVal(@amountDue)}<br />
+					{>(regBase.advanced(@k))}
+					<h3 class="ss-title">Invoice</h3>
+					<div>
+						<label>Amount Due</label>{>(ethVal(@amountDue))}<br />
 						<label>Refund Address</label>{>(ethAddrSml(@refundTo))}<br />
 						<label>Resource</label>{$@resource}<br />
-						{>(changeInvoiceRes(@k),@isOwnerOfOwner)}
 					</div>
+					{>(changeInvoiceRes(@k),@isOwnerOfOwner)}
 					{>(refundee(@k), @isRefundee)}
 					{>(events(@k, formatWithdrawableEvents))}
 				</div>`,
 			f: {
+				id: `invoice-${k.address}-adv`,
 				k: k,
 				kAddr: checksumAddr(k.address),
 				regName: utf8(k.regName()),
@@ -110,7 +108,7 @@ const invoice = {
 			},
 			s: {
 			}
-		});
+		}, CACHE);
 
 		return self;
 	}
@@ -139,14 +137,16 @@ const formatInvoicesEvents = (log, k) => {
 const invoicesOwner = (k) =>{
 	const self = {
 		w: `
-			<div class="layer">
-					<input id="inv-name-inp" class="ss-input" type="text" placeholder="Invoice Name" value="{$@invName}"></input>
-					<input id="res-hash-inp" class="ss-input ss-hash" type="text" placeholder="Resource Hash" value="{$@resHash}"></input>
-					<input id="inv-value-inp" class="ss-input ss-val" type="number" placeholder="Invoice Value" value="{$@invValue}"></input>
-					<input id="inv-refundaddr-inp" class="ss-input ss-addr" type="text" placeholder="Refund Address" value="{$@invRefAddr}"></input>
-					<button id="btn-crt-inv">Create New...</button>
+			<h3 class="ss-title">Create Invoice</h3>
+			<div>
+				{>(txtInp('invName', "Invoice Name"))}<br />
+				{>(ethHexInp('resHash', "Resource Hash"))}<br />
+				{>(decInp('invVal', "Invoice Value"))}<br />
+				{>(ethAddrInp('refAddr', "Refund Address"))}<br />
+				<button id="btn-crt-inv">Create New</button>
 			</div>
-			<div class="layer ss-flex-container">
+			<h3 class="ss-title">Invoices</h3>
+			<div class="ss-flex-container">
 				{#(@invoices)}
 			</div>
 		`,
@@ -220,12 +220,13 @@ const invoices = {
 					{>(events(@k, formatInvoicesEvents))}
 				</div>`,
 			f: {
+				id: `invoices-${k.address}-adv`,
 				k: k,
 				get isOwner() {return k.owner() === Session.currAccount;},
 			},
 			s: {
 			}
-		});
+		}, CACHE);
 
 		return self;
 	}

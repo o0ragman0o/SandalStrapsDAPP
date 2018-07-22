@@ -7,10 +7,12 @@ const DisownableContract = web3.eth.contract(DisownableABI);
 const disownable = (k) => {
 	self = new Tilux({
 		w: `
-			<h3>Disown (burn) ownership</h3>
-			Enter the burn phrase: "This contract is to be disowned."
-			<input id="disown-inp" value="{$@phrase}"></input>
-			<button id="disown-btn">Disown</button>
+			<h3 class="ss-title">Disown (burn) ownership</h3>
+			<div>
+				Enter the burn phrase: "This contract is to be disowned."
+				{>(txtInp('burnphrase'))}
+				<button id="disown-btn">Disown</button>
+			</div>
 		`,
 		f: {
 			k: k,

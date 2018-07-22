@@ -19,9 +19,10 @@ const formatDepositWithdrawAllEvents = (log, k) => {
 const depositWithdrawAllOwner = (k) => {
 	let self = {
 		w: `
+			<h3 class="ss-title">Change Forwarding Address</h3>
 			<div>
 				<input id="fAddr-inp" placeholder="Forwarding Address" value="{$@fAddr}"></input>
-				<button id="fwrd-btn">Set Forwarding Address</button>
+				<button id="fwrd-btn">Set Address</button>
 			</div>
 		`,
 		f: {
@@ -68,20 +69,21 @@ const depositWithdrawAll = {
 		let self = new Tilux({
 			w: `<div id="{$@id}">
 					{>(regBase.advanced(@k))}
-					<div class="layer">
-					<h3>Forwarding to</h3>
-					{>(idicon(@forwardTo))}
-					<a class="mono" href="https://etherscan.io/address/{$@forwardTo}" target="_blank">{$@forwardTo}</a>
-					{>(depositWithdrawAllOwner(@k), @isOwner)}
+					<h3 class="ss-title">Forwarding to</h3>
+					<div>
+						{>(addrLink(@forwardTo))}
 					</div>
-					{>(events(@k, formatDepositWithdrawAllEvents))}
-				</div>`,
+				{>(depositWithdrawAllOwner(@k), @isOwner)}
+				{>(events(@k, formatDepositWithdrawAllEvents))}
+				</div>
+				`,
 			f: {
+				id: `depositWithdrawAll-${k.address}-adv`,
 				k: k,
 				get forwardTo() { return k.forwardTo();},
 				get isOwner() {return k.owner() === Session.currAccount;},
 			}
-		});
+		}, CACHE);
 
 		return self;
 	}

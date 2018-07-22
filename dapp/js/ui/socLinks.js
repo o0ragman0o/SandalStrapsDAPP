@@ -8,7 +8,7 @@ const socLinks = new Tilux({
 	f: {
 		id: "links-tplt",
 	}
-})
+}, CACHE)
 
 
 console.log("ran socLinks.js");

@@ -69,7 +69,7 @@ const txForm = (txObj = {}) => {
 				}
 			}
 		}
-	});
+	}, CACHE);
 
 	return self;
 }

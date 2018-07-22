@@ -43,12 +43,11 @@ const bytesMap = {
 		const self =  new Tilux({
 			w: `<div id="{$@id}>"
 					{>(regBase.advanced(@k))}
-					<div class="layer">
+					<h3 class="ss-title">Lookup / Store / Clear</h3>
+					<div>
 						<input id="key-input-{$@kAddr}" placeholder="Key" class="mono" type="text" value="{$@key}"></input>
 						<button id="clear-key-btn">Clear Key</button><br />
-					<select id="reg-in-name" class="ss-input" placeholder="Registrar">
-						{#(@types, ['option'])}
-					</select>
+						{>(selInp("bytesType", @types))}
 						<textarea id="text-area-{$@kAddr}" placeholder="Enter bytes to store">{$@bytes}</textarea><br />
 						<button id="set-btn">Set</button>
 						<button id="clear-bytes-btn">Clear Bytes</button>
@@ -90,7 +89,7 @@ const bytesMap = {
 					}
 				},
 			}
-		});
+		}, CACHE);
 		return self;
 	}
 }

@@ -74,7 +74,8 @@ const value = {
 					<div>
 						{>(regBase.advanced(@k))}
 					</div>
-					<div class="layer">
+					<h3 class="ss-title">Current Value</h3>
+					<div>
 						<h2>{$@value} {$@units}</h2>
 						<label class="evnt-label">decimals</label>{$@decimals}
 						{>(valueOwner(@k), @isOwner)}
@@ -93,7 +94,7 @@ const value = {
 			},
 			s: {
 			}
-		});
+		}, CACHE);
 		return self;
 	}
 }

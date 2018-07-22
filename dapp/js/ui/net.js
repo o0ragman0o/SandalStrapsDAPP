@@ -15,7 +15,7 @@ const netStats = new Tilux({
 		id: 'net-stats',
 		get netName() {return {0:'Olympic',1:'Main Net',2:'Mordon',3:'Ropsten',4:'Rinkeby',42:'Kovan',77:'Sokol',99:'Core'}[Session.network.network] || `Private`;},
 	},
-})
+}, CACHE);
 
 const network = new Tilux({
 	w: `
@@ -27,7 +27,7 @@ const network = new Tilux({
 		id: "network-tplt",
 		get isConnected() { return web3.isConnected() },
 	}
-})
+}, CACHE);
 
 netStats.gaze(Session.block);
 netStats.gaze(Session.network);
@@ -42,11 +42,8 @@ BlockFilter.watch((err, res) => {
 		web3.eth.getBlock('latest',
 			(err, block)=>{
 				if(!err) Session.block = block;
-			});
-		// web3.eth.getBalance(Session.currAccount,
-		// 	(err, bal)=>{
-		// 		if(!err) currAccountLux.balance = bal
-		// 	});
+			}
+		);
 	}
 });
 

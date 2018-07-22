@@ -49,10 +49,11 @@ const payableErc20 = {
 		var self = new Tilux({
 			w: `<div id="{$@id}">
 					{>(regBase.advanced(@k))}
-					<div class="layer">
+					<h3 class="ss-title">Ether Balance</h3>
+					<div>
 						<h2>{>(ethVal(@ethBal))}</h2>
-						{>(erc20Form(@k))}
 					</div>
+					{>(erc20Form(@k))}
 				</div>
 				{>(events(@k, formatPayableErc20Events))}
 			`,
@@ -60,7 +61,7 @@ const payableErc20 = {
 				k: k,
 				get ethBal() {return k.etherBalanceOf(Session.currAccount)},
 			}
-		});
+		}, CACHE);
 
 		return self;
 	}

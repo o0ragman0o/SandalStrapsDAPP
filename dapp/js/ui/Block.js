@@ -24,7 +24,7 @@ const blockModal = (blockNum) => {
 		f: {
 			get blk(){return blk;}
 		}
-	});
+	}, CACHE);
 
 	return self;
 }

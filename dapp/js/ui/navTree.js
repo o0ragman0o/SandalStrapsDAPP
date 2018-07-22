@@ -11,7 +11,7 @@ const navTree = new Tilux({
 			selected: -1,
 			treeItems: ['root',['branch1','branch2',['leaf1','leaf2']]],
 		}
-	});
+	}, CACHE);
 
 // navTree.push = (kAddr) => {
 // 	navTree.f.TreeItems = navTree.f.TreeItems.slice(0, 1 + navTree.f.selected);

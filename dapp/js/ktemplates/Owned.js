@@ -7,9 +7,12 @@ const owned = (k) => {
 
 	let self = new Tilux({
 		w: `
-			<div id="{$@id}" class="ss-panel">
-				{>(ethAddrInp("new_owner_inp","New owner address"))}
-				<button id="change-owner-btn">Change Owner</button><br>
+			<div id="{$@id}">
+				<h3 class="ss-title">Change Owner</h3>
+				<div>
+					{>(ethAddrInp("new_owner_inp", "New owner address"))}
+					<button id="change-owner-btn">Change Owner</button>
+				</div>
 			</div>
 		`,
 		f: {

@@ -7,6 +7,7 @@ function getDoc(path) {
 	$getFile(path,
 		(mdText)=>{
 			let htmlDoc = mdConverter.makeHtml(mdText);
+			console.log(mdText);
 			modal.show(`<div class="modal-content fs08">${htmlDoc}</div>`);
 		}
 	);

@@ -44,18 +44,17 @@ const factory = {
 		const self = new Tilux({
 			w: `<div id="{$@id}">
 				{>(regBase.advanced(@k))}
-				<div class="layer" id="{$@id}">
-					<h2>Create a {$@regName} contract for <i class="fab fa-fw fa-ethereum"></i>{$@prodPrice}</h2>
-					<div class="ss-panel">
-						<input id="prod-name" class="ss-input" type="text" placeholder="New Contract Name"></input>
-						<input id="prod-owner" class="ss-input ss-addr" type="text" placeholder="Owner Address"></input>
+					<h3 class="ss-title">Create a {$@regName} contract for <i class="fab fa-fw fa-ethereum"></i>{$@prodPrice}</h3>
+					<div>
+						{>(txtInp("prodName","New Contract Name"))} <br />
+						{>(ethAddrInp("prodOwner","Owner Address"))}
 						<button id="btn-prod-crt" Create">Create</button>
+						<div class="notice">
+							Contracts created directly by a factory are not registered in a registrar. If the product contract is required to be a registered 
+							component of a SandalStraps organisation, then it should be created using 'Create New' in the organisation's SandalsStraps contract.<br>
+							If no owner address is given, the product contract owner defaults to the creating accounts address
+						</div>
 					</div>
-					<p>* Note: Contracts created directly by a factory are not registered in a registrar. If the product contract is required to be a registered 
-					component of a SandalStraps organisation, then it should be created using 'Create New' in the organisation's SandalsStraps contract.
-					</p>
-					<p>* If no owner address is given, the product contract owner defaults to the creating accounts address
-					</p>
 				</div>
 				{>(events(@k, formatFactoryEvents))}
 			</div>`,
@@ -81,7 +80,7 @@ const factory = {
 					},
 				},
 			}
-		});
+		}, CACHE);
 
 		return self;
 	},

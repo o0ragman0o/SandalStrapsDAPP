@@ -49,26 +49,15 @@ const changePayments = (k) => {
 	let d = new Date();
 	const self =  {
 		w: `
-			<div class="layer">
-				<h3>New or Change Payment</h3>
-				{>(ethAddrInp("rAddr-inp", @rAddr, "Payment address"))}Recipient address<br />
+			<h3 class="ss-title">New or Change Payment</h3>
+			<div>
+				{>(ethAddrInp("mprAddr", "Recipent address"))} Recipent Address<br />
 				{>(datePicker("startDate_inp", @startDate.value))} Date Start<br />
 				{>(datePicker("endDate_inp", @endDate.value))} Date Complete<br />
 				{>(ethValInp("pmtValue-inp", @pmtValue, "Total Payment"))}Total Payment<br />
 				{>(txButton("meteredPayments_btn", "Commit Payment"))}
 			</div>
 		`,
-		// w: `
-		// 	<div class="layer">
-		// 		<h3>New or Change Payment</h3>
-		// 		{>(ethAddrInp("rAddr-inp", @rAddr, "Payment address"))}Recipient address<br />
-		// 		<input id="rAddr-inp" type="text" placeholder="Payment address" value="{$@rAddr}"/>Recipient address<br />
-		// 		<input id="startDate-inp" type="date" value="{$@startDate.value}"/>Date Start<br />
-		// 		<input id="endDate-inp" type="date" value="{$@endDate.value}"/>Date Complete<br />
-		// 		{>(ethValInp("pmtValue-inp", "Total Payment"))}Total Payment<br />
-		// 		<button id="meteredPayments-btn">Commit Payment</button>
-		// 	</div>
-		// `,
 		f: {
 			rAddr: '',
 			startDate: `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`,
@@ -135,16 +124,15 @@ const meteredPayments = {
 		const self = new Tilux({
 			w: `<div id="{$@id}">
 					{>(regBase.advanced(@k))}
-					<div class="layer">
-						<div>
-							<label>Paid Out</label>{>(ethVal(@totalPaid))}<br />
-							<label>Escrowed Ether</label>{>(ethVal(@commPayments))}<br />
-							<label>Committed Time</label>{$@commTime} hours<br />
-						</div>
+					<h3 class="ss-title">Status</h3>
+					<div>
+						<label>Paid Out</label>{>(ethVal(@totalPaid))}<br />
+						<label>Escrowed Ether</label>{>(ethVal(@commPayments))}<br />
+						<label>Committed Time</label>{$@commTime} hours<br />
 					</div>
 					{>(changePayments(@k), @isOwner)}
-					<div class="layer">
-						<h3>Recipient Lookup</h3>
+					<h3 class="ss-title">Recipient Lookup</h3>
+					<div>
 						{>(ethAddrInp("recipLU", @luAddr, "Lookup Recipient Address "))}
 						{>(recipient(@k, @luAddr))}
 					</div>
@@ -167,7 +155,7 @@ const meteredPayments = {
 					"change": (event) => {self.f.luAddr = event.target.value;},
 				},
 			}
-		});
+		}, CACHE);
 
 		return self;
 	}

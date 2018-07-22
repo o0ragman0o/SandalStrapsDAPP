@@ -6,8 +6,8 @@ const accountsTplt = new Tilux({
 		w:`
 			<div id="{$@id}" class="js-end">
 				{>(accountSelect('currAccount'))}
-				<span id="send-tx"><i class="fa fa-paper-plane" aria-hidden="true"></i></span>
-				<span id="search"><i class="fas fa-search"></i></span>
+				<span id="send-tx" class="inp-icon"><i class="fa fa-paper-plane" aria-hidden="true"></i></span>
+				<span id="search" class="inp-icon"><i class="fas fa-search"></i></span>
 			</div>
 		`,
 		f: {
@@ -21,7 +21,7 @@ const accountsTplt = new Tilux({
 				click() { modal.show(searchForm()) }
 			},
 		}
-	});
+	}, CACHE);
 
 // accountsTplt.gaze(currAccountLux);
 

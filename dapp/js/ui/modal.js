@@ -1,9 +1,11 @@
 const modal = new Tilux({
 	w: `
-		<div id="{$@id}" class="modal" style="display:{$@display}">
-			<div class="modal-inner">
-				{>(@candle)}
-				<div>
+		<div id="{$@id}" class="{$@display}">
+			<div class="modal">
+				<div class="modal-inner">
+					{>(@candle)}
+				</div>
+				<div class="">
 					<button id="ok-btn" class="js-end">Ok</button>
 					<button id="cancel-btn" class="js-end">Cancel</button>
 				</div>
@@ -13,7 +15,7 @@ const modal = new Tilux({
 	f: {
 		id: "ss-modal",
 		candle: '',
-		display: 'none',
+		display: 'hidden',
 		onOk: '',
 	},
 	s: {
@@ -24,7 +26,7 @@ const modal = new Tilux({
 			click: ()=>{modal.hide();},
 		},
 	},
-});
+}, CACHE);
 
 modal.show = (candle, onOkCb) => {
 	modal.f.candle = candle;
@@ -34,5 +36,5 @@ modal.show = (candle, onOkCb) => {
 
 modal.hide = () => {
 	modal.f.candle = '';
-	modal.f.display = 'none';
+	modal.f.display = 'hidden';
 }
