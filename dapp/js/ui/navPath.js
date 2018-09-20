@@ -3,7 +3,7 @@ Session.navPathItems = [];
 const navPath = new Tilux({
 		w: `
 			<div id="{$@id}" class="nav-path js-start">
-			{#(@path)}
+				{#(@path)}
 			</div>
 		`,
 		f: {

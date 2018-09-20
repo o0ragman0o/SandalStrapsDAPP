@@ -23,7 +23,7 @@ const searchForm = (searchFor = '') => {
 					self.f.value = searchFor;
 					if(!!web3.eth.getBlock(searchFor)) self.f.result = Tilux.l(`Block: {>(blockLink(${searchFor}))}`);
 					else if(isAddr(searchFor)) self.f.result = Tilux.l(`Address: {>(ethAddrSml(${searchFor}))`);
-					else if(!!web3.eth.getTransaction(searchFor)) self.f.result = Tilux.l(`Transaction: {>(txLink(${searchFor}))}`);
+					else if(!!web3.eth.getTransaction(searchFor)) self.f.result = Tilux.l(`Transaction: {>(txHashLink('${searchFor}'))}`);
 					else self.f.result = `Found nothing for:<span class="mono">${searchFor}</span>`;
 
 				},

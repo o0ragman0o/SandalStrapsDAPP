@@ -19,7 +19,7 @@ const idicon = (bind, size = 4, _class = "") => {
 			get value() {
 				return Session[this.bind] ? blockie(Session[this.bind], size)
 					: isAddr(this.bind) ? blockie(this.bind, size)
-					: blockie('0x', size);;
+					: blockie('0x', size);
 			},
 		}
 	});
@@ -55,8 +55,16 @@ const ethVal = (bind) => {
 	return new Tilux({
 		w: `<span bind="{$@bind}"><i class="fab fa-fw fa-ethereum"></i> <span class="ss-val">{$@value}</span></span>`,
 		f: {
-			// bind: bind,
 			get value() { return bind in Session ? toEther(Session[bind]) : toEther(bind); },
+		},
+	});
+}
+
+const tokVal = (bind, dec = 0) => {
+	return new Tilux({
+		w: `<span bind="{$@bind}"><i class="fas fa-fw fa-dot-circle"></i> <span class="ss-val">{$@value}</span></span>`,
+		f: {
+			get value() { return bind in Session ? toDecimal(Session[bind], dec) : toDecimal(bind, dec); },
 		},
 	});
 }
@@ -66,7 +74,7 @@ const ethAddrInp = (bind, placeHolder = "Enter address 0x123aBc...") => {
 	const self = new Tilux({
 		w: `<span id="${id}">
 				{>(idicon(@bindTo, 4, "inp-icon"))}
-				<input id="${id}_inp" bind="bind" class="ss-input ss-addr" placeholder="${placeHolder}" pattern="0x[0-9|a-f|A-F]{40}">
+				<input id="${id}_inp" bind="{$@bindTo}" class="ss-input ss-addr ss-addr-inp" placeholder="${placeHolder}" pattern="0x[0-9|a-f|A-F]{40}">
 			</span>`,
 		f: {
 			id: id,
@@ -80,7 +88,7 @@ const ethAddrInp = (bind, placeHolder = "Enter address 0x123aBc...") => {
 			},
 		},
 	});
-	Session.gaze(self.f.bindTo, (value) => {window[self.f.id].value = value});
+	// Session.gaze(self.f.bindTo, (value) => {window[self.f.id].value = value});
 	return self;
 }
 
@@ -90,7 +98,7 @@ const ethHexInp = (bind, placeHolder = "0x123abc...") => {
 	const self = {
 		w: `<span id="{$@id}">
 				<span class="fs14 inp-icon">0x</span>
-				<input id="{$@id}_inp" class="ss-input ss-addr bytes32" placeholder="${placeHolder}" pattern="0x[0-9|a-f|A-F]{64}">
+				<input id="{$@id}_inp" class="ss-input ss-addr ss-bytes32" placeholder="${placeHolder}" pattern="0x[0-9|a-f|A-F]{64}">
 			</span>`,
 		f: {
 			id: id,
@@ -133,7 +141,7 @@ const txtInp = (bind, placeHolder = "abc...") => {
 	let id = newId('txtInp_');
 	const self = {
 		w: `<span id="{$@id}">
-				<span class="fs14 inp-icon"">Abc</span>
+				<span class="fs14 inp-icon">Abc</span>
 				<input id="{$@id}_inp" class="ss-input ss-addr bytes32" placeholder="${placeHolder}">
 			</span>`,
 		f: {
@@ -154,8 +162,31 @@ const txtInp = (bind, placeHolder = "abc...") => {
 const ethValInp = (bind, placeHolder="Value...") => {
 	let id = newId('selInp_');
 	const self = {
-		w: `<span id="${id}"><i class="fab fa-fw fa-ethereum fs14 inp-icon"></i>
-				<input id="${id}_inp" class="ss-input" placeholder="${placeHolder}" type="text" pattern="^(\d*\.)?\d+$">
+		w: `<span id="{$@id}">
+				<span class="inp-icon"><i class="fab fa-fw fa-ethereum fs14"></i></span>
+				<input id="{$@id}_inp" class="ss-input mono" placeholder="${placeHolder}" type="text" pattern="^(\d*\.)?\d+$">
+			</span>`,
+		f: {
+			id: id,
+			bindTo: bind,
+			get value() { return Session[self.f.bindTo] || ""; },
+		},
+		s: {
+			[`#${id}_inp`]: {
+				input(event) { Session[self.f.bindTo] = event.target.value; },
+				render(event) { event.target.value = self.f.value }
+			},
+		},
+	};
+	return new Tilux(self);
+}
+
+const tokValInp = (bind, placeHolder="Value...") => {
+	let id = newId('selInp_');
+	const self = {
+		w: `<span id="{$@id}">
+				<span class="inp-icon"><i class="fas fa-fw fa-dot-circle fs14"></i></span>
+				<input id="{$@id}_inp" class="ss-input mono" placeholder="${placeHolder}" type="text" pattern="^(\d*\.)?\d+$">
 			</span>`,
 		f: {
 			id: id,
@@ -176,7 +207,7 @@ const textAreaInp = (bind, placeHolder="Enter test...") => {
 	let id = newId('textAreaInp_');
 	const self = {
 		w: `<span id="${id}_wrapper">
-				<i class="fas fa-fw fa-font fs-14"></i>
+				<span class="inp-icon"><i class="fas fa-fw fa-font fs-14"></i></span>
 				<textarea id="${id}_ta" class="ss-input" placeholder="${placeHolder}"></textarea>
 			</span>
 		`,
@@ -220,7 +251,7 @@ const range = (bind, min="0", max="100") => {
 }
 
 const selectInp = (bind, entries) => {
-	let id = newId('selInp_');
+	let id = `selInp_${bind}`;
 	const self = {
 		w: `<span id='${id}'><select id='${id}-inp' class="ss-input">{#(@s_entries,['option'])}</select></span>
 		`,
@@ -236,7 +267,6 @@ const selectInp = (bind, entries) => {
 					Session[self.f.bind + '_selIdx'] = event.target.selectedIndex;
 				},
 				render(event) {
-					// console.log("rendered: selectInp");
 					event.target.selectedIndex = Session[self.f.bind + '_selIdx'] || 0;
 				}
 			}
@@ -263,13 +293,13 @@ const accountBal = (bind) => {
 const accountSelect = (bind) => {
 	return new Tilux({
 		w: `<span id="{$@id}" bind="{$@bindPass}">
-				{>(accountBal(@bindPass))}
-				{>(idicon(@bindPass, 4, "inp-icon"))}
-				{>(selectInp(@bindPass, @accounts))}
+				{>(accountBal(@bindto))}
+				{>(idicon(@bindto, 4, "inp-icon"))}
+				{>(selectInp(@bindto, @accounts))}
 			</span>`,
 		f: {
 			id: newId("accSel_"),
-			bindPass: bind,
+			bindto: bind,
 			get accounts() { return accounts(); },
 		},
 	});
@@ -277,23 +307,30 @@ const accountSelect = (bind) => {
 
 
 
-const datePicker = (callerId, flame) => {
-	return new Tilux({
-		w: `<span>
+const datePicker = (bind) => {
+	let id = `datePicker_${bind}`;
+	const self = {
+		w: `<span id="{$@id}">
 				<i class="fas fa-fw fa-calendar-alt fs14"></i>
-				<input id="{$@id}" type="date" value="{$@date}">
+				<input id="{$@id}-dp" type="date" value="{$@value}">
 			</span>
 		`,
 		f: {
-			id: `${callerId}_${flame}`,
-			get value() { return domCache[callerId].f[flame];},
+			id: id,
+			bind: bind,
+			get value() { return Session[self.f.bind + 'str'] },
 		},
 		s: {
-			["#" + callerId + '_' + flame + '_inp']: {
-				input(event) { domCache[callerId].f[flame] = event.target.value }
-			}
+			[`#${id+'-dp'}`]: {
+				input(event) {
+					Session[self.f.bind + 'str'] = event.target.value;
+					Session[self.f.bind] = event.target.valueAsNumber;
+				},
+			},
 		},
-	});
+	};
+
+	return new Tilux(self);
 }
 
 const txButton = (id, text, action=()=>{}) => {
@@ -309,17 +346,19 @@ const txButton = (id, text, action=()=>{}) => {
 	});
 }
 
-const checkBox = (callerId, flame) => {
+const checkBox = (bind, placeholder="Checkbox") => {
+	let id = `selInp_${bind}`;
 	return new Tilux({
-		w: `<input id="{$@id}" type="checkbox" {>('checked', @checked)}>
+		w: `<input id="{$@id}" type="checkbox" {>('checked', @checked)}> ${placeholder}
 		`,
 		f: {
-			id: `${callerId}_${flame}`,
-			get value() { return domCache[callerId].f[flame];},
+			id: id,
+			bind: bind,
+			get checked() { return Session[this.bind]; }
 		},
 		s: {
-			["#" + callerId + '_' + flame + '_inp']: {
-				input(event) { domCache[callerId].f[flame] = event.target.value }
+			[`${id}`]: {
+				input(event) { Session[self.f.bind] = event.target.value; }
 			}
 		},
 	});

@@ -34,7 +34,7 @@ let cbId = 0;
 const luxHandler = {
 	has(target, key) {
 		// Pseudo property '__isLux' used to prevent self nesting proxies
-		if (key === "__isLux") return true;
+		if (key == "__isLux" || key == "gaze") return true;
 		return key in target;
 	},
 
@@ -95,14 +95,6 @@ const cache = new Proxy({},
 		get(target, key) { if(key in target) return target[key];}
 	});
 
-cache.get = function(id, flame) {
-	return cache[id] ? cache[id].f[flame] : undefined;	
-}
-
-cache.set = function(id, flame, value) {
-	cache[id].f[flame] = value;
-}
-
 // A custom render event synchronously dispatched when a candle is rendered to
 // the DOM and all other events have been attached
 const renderEvent = new Event('render');
@@ -123,6 +115,7 @@ class Tilux {
 	constructor(candle = {}, toCache) {
 		// Return candle from cache if it already exists
 		if(!!candle.f && !!candle.f.id && !!cache[candle.f.id]) return cache[candle.f.id];
+		// Else wrap candle argument in Tilux frame
 		let lit = Lux();
 		lit.w = candle.w || '';
 		lit.f = candle.f || {};
@@ -137,7 +130,6 @@ class Tilux {
 		// Bind rendering to data in the Session Lux 
 		if('bind' in lit.f) lit.f.bind.split(' ').forEach(
 			(b)=>{ Session.gaze(b, ()=>{Tilux.render(`#${lit.f.id}`, lit)}); }
-			// (b)=>{ Session.gaze(b, ()=>{Tilux.render(`#${lit.f.id}`, lit)}); }
 		);
 		if('created' in lit.f) lit.f.created.apply(lit);
 		return lit;
@@ -154,6 +146,7 @@ class Tilux {
 			root = sibling.nextSibling;
 			sparks.forEach((spark) => {
 				for(let selector in spark){
+					// console.log(selector);
 					// root.querySelectorAll(selector).forEach( node => {
 					parent.querySelectorAll(selector).forEach( node => {
 							for(let event in spark[selector]) {

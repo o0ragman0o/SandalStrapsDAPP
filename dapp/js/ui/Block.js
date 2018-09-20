@@ -1,28 +1,42 @@
 const blockModal = (blockNum) => {
-	let blk = web3.eth.getBlock(blockNum);
 
 	const self = new Tilux({
 		w: `
 			<div id="{$@id}">
-				<h1><i class="fas fa-fw fa-cubes"></i> Block {$@blk.number}</h1>
+				<h1><i class="fas fa-fw fa-cubes"></i> Block {$@block.number}</h1>
 				<div class="modal-content fs08">
-					<label>Block Number</label><a class="mono" href="http://etherscan.io/block/{$@blk.number}" target="_">{$@blk.number}</a><br >
-					<label>Time Stamp</label><span class="mono">{$ new Date(@blk.timestamp * 1000).toLocaleString()}</span><br >
-					<label>Block Hash</label><span class="mono">{$@blk.hash}</span><br >
-					<label>Parent Hash</label>{>(blockLink(@blk.parentHash))}<br >
-					<label>Size</label><span class="mono">{$@blk.size} kb</span><br >
-					<label>Hash Rate</label><span class="mono">{$@rate}</span><br >
-					<label>Difficulty</label><span class="mono">{$@blk.difficulty}</span><br >
-					<label>Nonce</label><span class="mono">{$@blk.nonce}</span><br >
-					<label>Miner</label>{>(addrLink(@blk.miner))}<br >
-					<label>Gas Limit</label><span class="mono">{$@blk.gasLimit}</span><br >
-					<label>Gas Used</label><span class="mono">{$@blk.gasUsed}</span><br >
-					<label>Extra Data</label><span class="mono">{$@blk.extraData}</span><br >
+					<label>Block Number</label><span id="prevBlk">&lt;</span><a class="mono" href="http://etherscan.io/block/{$@block.number}" target="_">{$@block.number}</a><span id="nextBlk">&gt;</span><br>
+					<label>Time Stamp</label><span class="mono">{$ new Date(@block.timestamp * 1000).toLocaleString()}</span><br>
+					<label>Block Hash</label><span class="mono">{$@block.hash}</span><br>
+					<label>Parent Hash</label>{>(blockLink(@block.parentHash))}<br>
+					<label>Size</label><span class="mono">{$@block.size} kb</span><br>
+					<label>Hash Rate</label><span class="mono">{$@rate}</span><br>
+					<label>Difficulty</label><span class="mono">{$@block.difficulty}</span><br>
+					<label>Nonce</label><span class="mono">{$@block.nonce}</span><br>
+					<label>Miner</label>{>(addrLink(@block.miner))}<br>
+					<label>Gas Limit</label><span class="mono">{$@block.gasLimit}</span><br>
+					<label>Gas Used</label><span class="mono">{$@block.gasUsed}</span><br>
+					<label>Extra Data</label><span class="mono">{$@block.extraData}</span><br>
 				</div>
 			</div>
 		`,
 		f: {
-			get blk(){return blk;}
+			id: `mod-block`,
+			blockNum: blockNum,
+			block: web3.eth.getBlock(blockNum),
+			get getBlock() {this.block = web3.eth.getBlock(this.blockNum)},
+		},
+		s: {
+			'prevBlk': {
+				click() {
+					self.f.blockNum--;
+				}
+			},
+			'nextBlk': {
+				click() {
+					self.f.blockNum++;
+				}
+			},
 		}
 	}, CACHE);
 

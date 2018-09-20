@@ -20,8 +20,6 @@ const owning = (k) => {
 		`,
 		f: {
 			k: k,
-			newOwnerAddr: null,
-			receiveKAddr: null,
 		},
 		s: {
 

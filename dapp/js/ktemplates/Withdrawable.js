@@ -26,98 +26,31 @@ const formatWithdrawableEvents = (log, k) => {
 }
 
 
-const deposit = (k) => {
-	const self = {
-		w: `<div>
-				{>(ethValInp('depositVal', 'Deposit value...'))}
-				<button id="deposit-btn">Deposit</button>
-			</div>`,
-		f: {
-			value: 0,
-		},
-		s: {
-			"#deposit-inp": {
-				change: event => self.f.value = event.target.value,
-			},
-			"#deposit-btn": {
-				click: () => web3.eth.sendTransaction({from: Session.currAccount, to:k.address, value: self.f.value * 1e18, gas: 100000}),
-			},
-		},
-	}
-
-	return self;
-}
-
-
-const withdrawAll = (k) => {
-	return {
-		w: `<div>
-				<button id="waAll-btn">Withdraw All</button>
-				{>(ethVal(@ethBal))}
-			</div>`,
-		f: {
-			get ethBal() {
-				if(k.hasOwnProperty('etherBalanceOf')) {
-					return k.etherBalanceOf(Session.currAccount);
-				} else {
-					return balance(k.address);
-				}
-			}
-		},
-		s: {
-			"#waAll-btn": {
-				click: () => k.withdrawAll({from: currAccount, gas: 100000}),
-			},
-		},
-	}
-}
-
-
-const withdrawAllFor = (k) => {
-	const self = {
-		w: `<div>
-				{>(ethAddrInp('wdaf', "array of addresses to withdraw for..."))}
-				<button id="wdAllFor-btn">Withdraw For</button>
-			</div>
-		`,
-		f: {
-			wdAllAddrs: '',
-		},
-		s: {
-			"#wdAllFor-inp": {
-				change: event => {if (isAddr(event.target.value)) self.f.addr = event.target.value},
-			},
-			"#wdAllFor-btn": {
-				click: () => {
-					let addrs = self.wdAllAddrs.split(',');
-					addrs = addrs.map(addr=>{if(isAddr(addr)) return addr; });
-					if (isAddr(self.f.addr)) k.withdrawAllFor([self.f.addr], {from: Session.currAccount, gas: 100000})},
-			},
-		},
-	}
-
-	return self;
-}
-
-
 const withdrawable = (k) => {
 	const self = {
 		w: `
-			{>('<h3 class="ss-title">Deposit / Withdraw Functions</h3> <div> ', @canDeposit || @isWithdraw || @isWithdrawFor)}
-				{>(deposit(@k), @canDeposit)}
-				{>(withdrawAll(@k), @isWithdraw)}
-				{>(withdrawAllFor(@k), @isWithdrawFor)}
-			{>('</div>', @canDeposit || @isWithdraw || @isWithdrawFor)}
+			<div class="{>('', @canDeposit || @isWithdraw || @isWithdrawFor, 'hidden')}">
+				<h3 class="ss-title">Deposit / Withdraw Functions</h3> <div>
+				<div class="{>('', @canDeposit, 'hidden')}">
+					{>(ethValInp('depositVal', 'Deposit value...'))}
+					<button id="deposit-btn">Deposit</button>
+				</div>
+				<div class="{>('', @isWithdrawFor, 'hidden')}">
+					{>(textAreaInp('wdaf', "Comma separated list of addresses to withdraw for..."))}
+					<button id="wdAllFor-btn">Withdraw For</button>
+				</div>
+				<div class="{>('', @isWithdraw, 'hidden')}">
+					<button id="waAll-btn">Withdraw All</button>
+					{>(ethVal(@ethBal))}
+				</div>
+			</div>
 		`,
 		f: {
 			id: `withdrawable-${k.address}`,
 			k: k,
-			balance: balance(k.address),
-			get ethBalanceOf() { if('ethBalanceOf' in k) return k.ethBalanceOf(k.address);},
-
-			withdrawForAddr: '',
 			isWithdraw: 'withdrawAll' in k,
 			isWithdrawFor: 'withdrawAllFor' in k,
+			get ethBal() { return 'etherBalanceOf' in k ? k.etherBalanceOf(Session.currAccount) : balance(k.address);},
 			get canDeposit() {
 				let i=-1;
 				while(++i < k.abi.length) {
@@ -127,6 +60,20 @@ const withdrawable = (k) => {
 				return false;
 			},
 		},
+		s: {
+			"#deposit-btn": {
+				click: () => web3.eth.sendTransaction({from: Session.currAccount, to:k.address, value: toWei(Session.depositVal), gas: 100000}),
+			},			
+			"#waAll-btn": {
+				click: () => k.withdrawAll({from: Session.currAccount, gas: 200000}),
+			},
+			"#wdAllFor-btn": {
+				click: () => {
+					let addrs = Session.wdaf.split(',');
+					addrs = addrs.map(addr=>{if(isAddr(addr)) return addr; });
+					k.withdrawAllFor(addrs, {from: Session.currAccount, gas: 1000000})},
+			},
+		}
 	}
 
 	return self;

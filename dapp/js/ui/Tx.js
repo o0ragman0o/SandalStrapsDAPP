@@ -75,9 +75,9 @@ const txForm = (txObj = {}) => {
 }
 
 const txHashModal = (txHash) => {
-	let tx = web3.eth.getTransaction(txHash);
+	let tx = web3.eth.getTransaction(txHash) || {};
 	let txr = web3.eth.getTransactionReceipt(txHash);
-	if(!tx) return `No transaction found.`
+	// if(!tx) return `No transaction found.`
 
 	return {
 		w: `

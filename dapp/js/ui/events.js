@@ -7,6 +7,7 @@ const eventInfo = (log) => {
 				<span>${(new Date(block(log.blockNumber).timestamp * 1000)).toLocaleString()}</span> |
 				<span>TX&nbsp;${txHashLink(log.transactionHash)}</span>
 			</div>
+			<hr>
 		`)
 }
 
@@ -29,7 +30,7 @@ const events = (k, evTmplt) => {
 			<div id="{$@id}">
 				<h3 class="ss-title">Events</h3>
 				<div>
-					{>(txtInp("evntFilter", "Filter"))}
+					{>(txtInp("evntFilter", "Filter (TODO)"))}
 					{#(@events)}
 				</div>
 			</div>

@@ -22,7 +22,7 @@ function block(num) {
 }
 
 function toEther(num) {
-    if (!(num instanceof BigNumber)) num = new BigNumber(num);
+    if (!(num instanceof BigNumber)) num = new BigNumber(num.toString());
     return web3.fromWei(num).toFormat(4);
 }
 
@@ -30,8 +30,17 @@ function toWei(num) {
     return web3.toWei(num);
 }
 
-function toDecimal(num, shift) {
+function fromDecimal(num, shift) {
     return new BigNumber(num).mul(10**shift).toNumber();
+}
+
+function toDecimal(num, shift) {
+    return new BigNumber(num).div(10**shift).toNumber();
+}
+
+function toDate(num) {
+    if (num instanceof BigNumber) num = num.toNumber();  
+    return new Date(num * 1000).toString();  
 }
 
 function setAccount(acc) {

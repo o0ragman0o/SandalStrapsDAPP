@@ -5,6 +5,12 @@ const RegBaseContract = web3.eth.contract(RegBaseABI);
 
 // $import('js/apis/RegBaseAPI.js');
 
+const isRegBase = (k) => {
+	return !!k
+		&& 'regName' in k
+		&& 'VERSION' in k
+}
+
 const formatRegBaseEvents = (log) => {
 	switch (log.event) {
 		case 'ChangeResource': return Tilux.l(`
@@ -32,42 +38,30 @@ const formatRegBaseEvents = (log) => {
 	}
 }
 
-const regOwned = (k) => {
-	let self = {
+const regInit = (k) => {
+	const self = new Tilux({
 		w: `
-				{>(owned(@k))}
-				<h3 class="ss-title">Change Resource</h3>
+			<div id="{$@id}">
+				<h3 class="important ss-title">Initialize Contract!</h3>
 				<div>
-				{>(ethHexInp(@res))} <button id="change-res-btn">Change Resource</button><br>
-				<button id="destroy-btn">Destroy Contract</button>
+					<button id="init">Init level {$@initFuse}</button>
 				</div>
+			</div>
 		`,
 		f: {
+			id: `reg-${k.address}-init`,
 			k: k,
-			res: '',
+			get initFuse() { return k.__initFuse().toNumber()}
 		},
 		s: {
-			"change-res-inp": {
-				change: (event) => {
-					self.f.res = event.target.value;
-				},
+			'#init': {
+				click: () => self.f.k._init({from: Session.currAccount, gas: 3000000}),
 			},
-			"change-res-btn": {
-				click: () => {
-					toTx(self.f.k.changeResource, self.k.res);
-					// self.f.k.changeResource.get(newResource);
-				},
-			},
-			"destroy-btn": {
-				click: ()=>{
-					toTx(self.f.k.destroy);
-					// self.f.k.destroy();
-				},
-			},
-		},
-	};
+		}
+	});
 	return self;
 }
+
 
 const regBase = {
 	minimal: (k)=>{
@@ -85,9 +79,9 @@ const regBase = {
 			f: {
 				id: `regBase-${k.address}-min`,
 				k: k,
-				kAddr: checksumAddr(k.address),
-				regName: utf8(k.regName()),
-				version: utf8(k.VERSION()),
+				get kAddr() { return checksumAddr(k.address)},
+				get regName() { return utf8(k.regName())},
+				get version() { return utf8(k.VERSION())},
 				click: 'navPath.push',
 			},
 			s: {
@@ -111,9 +105,9 @@ const regBase = {
 			f: {
 				id: `regBase-${k.address}-bas`,
 				k: k,
-				kAddr: checksumAddr(k.address),
-				regName: utf8(k.regName()),
-				version: utf8(k.VERSION()),
+				get kAddr() { return checksumAddr(k.address)},
+				get regName() { return utf8(k.regName())},
+				get version() { return utf8(k.VERSION())},
 				click: 'navPath.push',
 			},
 		}
@@ -133,33 +127,52 @@ const regBase = {
 							<div class="rb-owner ss-addr-sml u-addr"><i class="fas fa-fw fa-user"></i> {>(addrLink(@owner))}</div>
 							<div class="rb-bal js-end as-end">{>(ethVal(@ethBal))}</div>
 						</div>
-							{>(withdrawable(@k))}
-							{>(regOwned(@k), @isOwner)}
-							{>(owning(@k), @isOwner)}
-							{>(newOwner(@k),  @isNewOwner)}
+						{>(withdrawable(@k))}
+						{>(owned(@k), @isOwner)}
+						{>(owning(@k))}
+						<div class="{>('', @isOwner, 'hidden')}">
+							<h3 class="ss-title">Change Resource</h3>
+							<div>
+								{>(ethHexInp("chng-res-inp"))} <button id="change-res-btn">Change Resource</button><br>
+							</div>
+							<h3 class="ss-title">Destroy Contract</h3>
+							<div>
+								<button id="destroy-btn">Destroy</button>
+								<div class="notice important">This action will cause the contract to self destruct and no longer be available to the blockchain.<br>
+									WARNING! This operation may cause the loss of control and or correct operation of any contract or interface dependant upon this contract instance.
+								</div> 
+							</div>
+						</div>
 					</div>
 					`,
 				f: {
 					id: `regBase-${k.address}-adv`,
 					k: k,
-					kAddr: checksumAddr(k.address),
-					regName: 'regName' in k ? utf8(k.regName()) : 'Contract is not SandalStraps compliant',
-					version: 'VERSION' in k ? utf8(k.VERSION()) : 'No version found',
-					ethBal: web3.eth.getBalance(k.address),
-					// s_owning: owning(k),
-					// s_newOwner: newOwner(k),
-					get owner() {return 'owner' in k ? checksumAddr(k.owner()) : 'Contract is not ownable'},
-					get isOwner() {return 'owner' in k ? k.owner() === Session.currAccount : false;},
-					get isNewOwner() {return 'newOwner' in k ? k.newOwner() === Session.currAccount : false;},
-					get resource() {return 'resource' in k ? k.resource() : 'Contract has no resource field';},
-					get docsPath() { return resources[this.version].docPath }
+					get kAddr() { return checksumAddr(k.address)},
+					get regName() { return 'regName' in k ? utf8(k.regName()) : 'Contract is not SandalStraps compliant'; },
+					get version() { return 'VERSION' in k ? utf8(k.VERSION()) : 'No version found'; },
+					get ethBal() { return balance(k.address); },
+					get owner() { return 'owner' in k ? checksumAddr(k.owner()) : 'Contract is not ownable'},
+					get isOwner() { return 'owner' in k ? k.owner() === Session.currAccount : false;},
+					get resource() { return 'resource' in k ? k.resource() : 'Contract has no resource field'; },
+					get docsPath() { return resources[this.version].docPath; }
 				},
 				s: {
 					"#docsLink": {
 						click() {
 							getDoc(resources[self.f.version].docPath);
-						}
-					}
+						},
+					},
+					"change-res-btn": {
+						click: () => {
+							k.changeResource(Session.chng-res-inp, {from: Session.currentAccount, gas: 100000});
+						},
+					},
+					"destroy-btn": {
+						click: ()=>{
+							k.destroy({from: Session.currAccount, gas: 100000});
+						},
+					},
 				}
 			}, CACHE);
 			return self;

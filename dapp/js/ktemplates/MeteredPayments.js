@@ -23,81 +23,6 @@ const formatMeteredPaymentsEvents = (log) => {
 }
 
 
-const recipient = (k, addr) => {
-	let recip = k.recipients(addr);
-	return {
-		w: `
-			<div>
-				<label>Locked</label>{$@locked}<br />
-				<label>Last Withdrawal</label>{$@lastWithdrawal}<br />
-				<label>Period Remaining</label>{$@period} hours<br />
-				<label>Payment Rate</label>{>(ethVal(@rate))}/hr<br />
-				<label>Available</label>{>(ethVal(@balAvailable))}
-			</div>
-		`,
-		f: {
-			period: recip[0].div(3600),
-			lastWithdrawal: new Date(recip[1] * 1000),
-			locked: recip[2],
-			rate: recip[3].mul(3600),
-			balAvailable: k.etherBalanceOf(addr),
-		},
-	}
-}
-
-const changePayments = (k) => {
-	let d = new Date();
-	const self =  {
-		w: `
-			<h3 class="ss-title">New or Change Payment</h3>
-			<div>
-				{>(ethAddrInp("mprAddr", "Recipent address"))} Recipent Address<br />
-				{>(datePicker("startDate_inp", @startDate.value))} Date Start<br />
-				{>(datePicker("endDate_inp", @endDate.value))} Date Complete<br />
-				{>(ethValInp("pmtValue-inp", @pmtValue, "Total Payment"))}Total Payment<br />
-				{>(txButton("meteredPayments_btn", "Commit Payment"))}
-			</div>
-		`,
-		f: {
-			rAddr: '',
-			startDate: `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`,
-			endDate:  `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`,
-			pmtValue: 0,
-		},
-		s: {
-			"#rAddr-inp": {
-				"change": (event) => {self.f.rAddr = event.target.value;},
-			},
-			"#startDate-inp": {
-				"change": (event) => {
-					let d = event.target;
-					self.f.startDate = d;
-					if (self.f.endDate.valueAsNumber < self.f.startDate.valueAsNumber) self.f.endDate = self.f.startDate;
-				},
-			},
-			"#endDate-inp": {
-				"change": (event) => {
-					let d = event.target;
-					self.f.endDate = d;
-					if (self.f.endDate.valueAsNumber < self.f.startDate.valueAsNumber) self.f.startDate = self.f.endDate;
-				},
-			},
-			"#pmtValue-inp": {
-				"change": (event) => {self.f.pmtValue = event.target.value;},
-			},
-			"#meteredPayments_btn": {
-				"click": () => {
-					let startTime = self.f.startDate.valueAsNumber / 1000;
-					let period = (self.f.endDate.valueAsNumber - self.f.startDate.valueAsNumber) / 1000;
-					self.f.k.changePayment(self.f.rAddr, startTime, period, {from: Session.currAccount, value: toWei(self.f.pmtValue), gas: 200000});
-				},
-			},		
-		}
-	}
-	return self;
-
-}
-
 const meteredPayments = {
 
 	minimal: (k) => {
@@ -124,35 +49,66 @@ const meteredPayments = {
 		const self = new Tilux({
 			w: `<div id="{$@id}">
 					{>(regBase.advanced(@k))}
+					<div class="{>('', @isOwner, 'hidden')}">
+						<h3 class="ss-title">New or Change Payment</h3>
+						<div>
+							{>(ethAddrInp("mprAddr", "Recipent address"))} Recipent Address<br />
+							{>(datePicker("startDate_inp"))} Date Start<br />
+							{>(datePicker("endDate_inp"))} Date Complete<br />
+							{>(ethValInp("pmtValue_inp", "Total Payment"))}Total Payment<br />
+							<button id="commPayments-btn">Commit Payment</button>
+							<div class="notice">
+								Note: Changing an existing payment will payout any unclaimed payment due to the recipient and any refund due to the owner.
+							</div>
+						</div>
+					</div>
+					<h3 class="ss-title">Recipient Lookup</h3>
+					<div>
+						{>(ethAddrInp("mpRecipLU", Session.currAccount))}
+						<div>
+							<label>Locked</label>{$@locked}<br />
+							<label>Last Withdrawal</label>{$@lastWithdrawal}<br />
+							<label>Period Remaining</label>{$@period} hours<br />
+							<label>Payment Rate</label>{>(ethVal(@rate))}/hr<br />
+							<label>Available</label>{>(ethVal(@balAvailable))}
+						</div>
+					</div>
 					<h3 class="ss-title">Status</h3>
 					<div>
 						<label>Paid Out</label>{>(ethVal(@totalPaid))}<br />
 						<label>Escrowed Ether</label>{>(ethVal(@commPayments))}<br />
 						<label>Committed Time</label>{$@commTime} hours<br />
 					</div>
-					{>(changePayments(@k), @isOwner)}
-					<h3 class="ss-title">Recipient Lookup</h3>
-					<div>
-						{>(ethAddrInp("recipLU", @luAddr, "Lookup Recipient Address "))}
-						{>(recipient(@k, @luAddr))}
-					</div>
 					{>(events(@k, formatMeteredPaymentsEvents))}
 				</div>`,
 			f: {
 				id: `meteredPayments-${k.address}-adv`,
 				k: k,
-				luAddr: Session.currAccount,
+
 				get totalPaid() {return k.paidOut()},
 				get commTime() {return k.committedTime().div(3600)},
 				get commPayments() {return k.committedPayments()},
 				get isOwner() {return k.owner() === Session.currAccount;},
-				get registered() {
-					return meteredPayments.getRegistered(k).map(addr=>Tilux.l(kCandles[addr].minimal));
+				mpRecip: null,
+				get period() { return this.mpRecip ? this.mpRecip[0].div(3600) : ''; },
+				get lastWithdrawal() { return this.mpRecip ? toDate(this.mpRecip[1]) : 0; },
+				get locked() { return this.mpRecip ? this.mpRecip[2] : ''; },
+				get rate() { return this.mpRecip ? this.mpRecip[3].mul(3600) : 0; },
+				get balAvailable() { return k.etherBalanceOf(isAddr(Session.mpRecipLU) ? Session.mpRecipLU : Session.currAccount); },
 				},
-			},
 			s: {
-				"#recipLU": {
-					"change": (event) => {self.f.luAddr = event.target.value;},
+				'input[bind="mpRecipLU"]': {
+					"input": (event) => {
+						self.f.mpRecip = isAddr(event.target.value) ? self.f.k.recipients(event.target.value) : null;
+					},
+				},
+				"#commPayments-btn": {
+					click() {
+						if(!isAddr(Session.mprAddr)) return;
+						let startTime = Session.startDate_inp / 1000;
+						let period = Session.endDate_inp/1000 - startTime;
+						self.f.k.changePayment(Session.mprAddr, startTime, period, {from: Session.currAccount, value: toWei(Session.pmtValue_inp), gas: 300000});
+					},
 				},
 			}
 		}, CACHE);
@@ -186,13 +142,13 @@ resources["MeteredPaymentsFactory v0.4.2"] = {
 	docPath: "docs/MeteredPaymentsAPI.md"
 }
 
-resources["MeteredPaymentFactory v0.4.2"] = {
-	template: factory,
-	interface: FactoryContract,
+resources["MeteredPayments v0.4.3"] = {
+	template: meteredPayments,
+	interface: MeteredPaymentsContract,
 	docPath: "docs/MeteredPaymentsAPI.md"
 }
 
-resources["MeteredPaymentFactory v0.4.1"] = {
+resources["MeteredPaymentsFactory v0.4.3"] = {
 	template: factory,
 	interface: FactoryContract,
 	docPath: "docs/MeteredPaymentsAPI.md"

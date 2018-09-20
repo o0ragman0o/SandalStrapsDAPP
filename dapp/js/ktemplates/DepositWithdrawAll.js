@@ -71,7 +71,9 @@ const depositWithdrawAll = {
 					{>(regBase.advanced(@k))}
 					<h3 class="ss-title">Forwarding to</h3>
 					<div>
-						{>(addrLink(@forwardTo))}
+					<h3>
+						{>(idicon(@forwardTo))} {>(addrLink(@forwardTo))}
+					</h3>
 					</div>
 				{>(depositWithdrawAllOwner(@k), @isOwner)}
 				{>(events(@k, formatDepositWithdrawAllEvents))}
@@ -97,6 +99,18 @@ resources["DepositWithdrawAll v0.4.1"] = {
 }
 
 resources["DepositWithdrawAllFactory v0.4.1"] = {
+	template: factory,
+	interface: FactoryContract,
+	docPath: "docs/DepositWithdrawAllAPI.md"
+}
+
+resources["DepositWithdrawAll v0.4.3"] = {
+	template: depositWithdrawAll,
+	interface: DepositWithdrawAllContract,
+	docPath: "docs/DepositWithdrawAllAPI.md"
+}
+
+resources["DepositWithdrawAllFactory v0.4.3"] = {
 	template: factory,
 	interface: FactoryContract,
 	docPath: "docs/DepositWithdrawAllAPI.md"

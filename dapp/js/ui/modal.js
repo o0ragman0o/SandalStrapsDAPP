@@ -4,10 +4,10 @@ const modal = new Tilux({
 			<div class="modal">
 				<div class="modal-inner">
 					{>(@candle)}
-				</div>
-				<div class="">
-					<button id="ok-btn" class="js-end">Ok</button>
-					<button id="cancel-btn" class="js-end">Cancel</button>
+					<div class="">
+						<button id="ok-btn" class="js-end">Ok</button>
+						<button id="cancel-btn" class="js-end">Cancel</button>
+					</div>
 				</div>
 			</div>
 		</div>

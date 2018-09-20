@@ -45,10 +45,10 @@ const bytesMap = {
 					{>(regBase.advanced(@k))}
 					<h3 class="ss-title">Lookup / Store / Clear</h3>
 					<div>
-						<input id="key-input-{$@kAddr}" placeholder="Key" class="mono" type="text" value="{$@key}"></input>
-						<button id="clear-key-btn">Clear Key</button><br />
-						{>(selInp("bytesType", @types))}
-						<textarea id="text-area-{$@kAddr}" placeholder="Enter bytes to store">{$@bytes}</textarea><br />
+						{>(ethHexInp('bmKey', 'Lookup key'))}
+						<button id="clear-key-btn">Clear Key</button><br>
+						{>(selectInp("bytesType", @types))}<br>
+						{>(textAreaInp('bmBytes', 'Bytes to store'))}<br>
 						<button id="set-btn">Set</button>
 						<button id="clear-bytes-btn">Clear Bytes</button>
 					</div>
@@ -57,17 +57,10 @@ const bytesMap = {
 			f: {
 				k: k,
 				kAddr: k.address,
-				key: '',
-				bytes: '',
+				get bytes() {self.f.k.bytes(Session['bmKey'])},
 				types: [],
 			},
 			s: {
-				"#get-hash": {
-					change: event => {
-						self.f.hash = event.target.value;
-						self.f.string = self.f.k.strings(self.f.hash);
-					},
-				},
 				"#string": {
 					change: event => {
 						self.f.string = event.target.value;
@@ -108,6 +101,18 @@ resources["BytesMap v0.4.0"] = {
 }
 
 resources["BytesMapFactory v0.4.0"] = {
+	template: factory,
+	interface: FactoryContract,
+	docPath: "docs/BytesMapAPI.md"
+}
+
+resources["BytesMap v0.4.3"] = {
+	template: bytesMap,
+	interface: BytesMapContract,
+	docPath: "docs/BytesMapAPI.md"
+}
+
+resources["BytesMapFactory v0.4.3"] = {
 	template: factory,
 	interface: FactoryContract,
 	docPath: "docs/BytesMapAPI.md"

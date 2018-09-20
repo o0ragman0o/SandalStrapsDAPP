@@ -13,7 +13,9 @@ const addressModal = (addr) => {
 			</div>
 		`,
 		f: {
+			id: `mod-${addr}`,
 			addr: addr,
+			bind: 'block',
 			get bal(){ return web3.eth.getBalance(addr) },
 			get nonce(){ return web3.eth.getTransactionCount(addr) },
 			get code(){ return web3.eth.getCode(addr) },

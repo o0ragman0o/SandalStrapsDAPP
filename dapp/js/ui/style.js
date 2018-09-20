@@ -56,6 +56,10 @@ let ss_style = new Tilux({
 				font-weight: 300;
 			}
 
+			hr {
+				border-top: 1px solid {$@dark};
+			}
+
 			label {
 				display: inline-block;
 				font-weight: 600;
@@ -346,6 +350,15 @@ let ss_style = new Tilux({
 				font-size: 0.8em;
 			}
 
+			.ss-addr-inp {
+				width: 372px;
+			}
+
+			.ss-bytes32 {
+				width: 570px;				
+			}
+
+
 			.upper {
 				text-transform: uppercase;
 			}
@@ -367,14 +380,12 @@ let ss_style = new Tilux({
 			.ss-select,
 			.ss-row
 			{
-				/*display: flex;*/
 				cursor: pointer;
 				border-width: 1.4px;
 				border-style: solid;
 				padding: 13px 15.6px;
 				margin: 9px;
 			    transition-duration: 0.3s;
-			    vertical-align: middle;
 			    align-items: center;
 				border-radius: 4px;
 				border-color: {$@lightest};
@@ -391,12 +402,15 @@ let ss_style = new Tilux({
 
 			.rb-button
 			{
+				display: flex;
+			    vertical-align: middle;
 				width: 300px;
 			}
 
 			.ss-input,
 			.ss-select
 			{
+				width: 372px;
 				cursor: pointer;
 				display: inline-block;
 			}
@@ -480,6 +494,7 @@ let ss_style = new Tilux({
 				color: {$@lightest};
 			}
 
+
 			h3.ss-title {
 				margin: 0px 16px;
 				padding: 6px;
@@ -488,6 +503,11 @@ let ss_style = new Tilux({
 				text-transform: uppercase;
 				background-color: {$@darkest};
 				color: {$@lightest};
+			}
+
+			h3.ss-title.important {
+				color: {$@darkest};
+				background-color: {$@invalid};				
 			}
 
 			.ss-title + div {
@@ -504,6 +524,17 @@ let ss_style = new Tilux({
 				background-color: {$@dark};
 				padding: 6px;
 				border-radius: 0px 0px 4px 4px;
+			}
+
+			.ss-title + div > .important {
+				background-color: {$@invalid};
+				padding: 6px;
+				border-radius: 0px 0px 4px 4px;
+			}
+
+			.ss-title + div > h2 {
+				margin-top: 0px;
+				padding-top: 19px;
 			}
 
 			.idicon {
@@ -553,16 +584,14 @@ let ss_style = new Tilux({
 			.modal-content {
 				overflow-y: auto;
 				overflow-wrap: break-word;
-				height: calc(100% - 64px);
+				width: 90%;
+				max-width: 90%;
+				/*height: calc(100% - 64px);*/
 			}
 
 			.evnt-label {
 				display: inline-block;
 				width: 130px;
-			}
-
-			.bytes32 {
-				width: 570px;				
 			}
 
 			.inp-icon {
@@ -577,9 +606,9 @@ let ss_style = new Tilux({
 			}
 
 			pre {
-				max-width: 98%;
+				max-width: 90%;
 				padding: 6px;
-				overflow: hidden;
+				overflow: scroll;
 				background-color:{$@light};
 				box-shadow: 0.5px 0.5px 5px {$@dark} inset;	
 			}

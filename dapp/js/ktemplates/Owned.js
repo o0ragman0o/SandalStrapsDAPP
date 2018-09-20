@@ -8,44 +8,36 @@ const owned = (k) => {
 	let self = new Tilux({
 		w: `
 			<div id="{$@id}">
-				<h3 class="ss-title">Change Owner</h3>
-				<div>
-					{>(ethAddrInp("new_owner_inp", "New owner address"))}
-					<button id="change-owner-btn">Change Owner</button>
+				<div class="{>('', @isOwner, 'hidden')}">
+					<h3 class="ss-title">Change Owner</h3>
+					<div>
+						{>(ethAddrInp("new_owner_inp", "New owner address"))}
+						<button id="change-owner-btn">Change Owner</button>
+					</div>
+				</div>
+				<div class="{>('', @isNewOwner, 'hidden')}">
+					<h3 class="ss-title">Accept Ownership</h3>
+					<div>
+						<button id="acc-owner-btn">Accept Ownership</button>
+					</div>
 				</div>
 			</div>
 		`,
 		f: {
 			id: `owned-${k.address}`,
 			k: k,
-			ownsOwner: () => { return contracts[k.owner()].owner() === currendAccountLux.address; },
-			newOwner: '',
-			res: web3.toHex(k.resource()),
+			get isOwner() { return 'owner' in k ? Session.currentAccount == k.owner() : false; },
+			get isNewOwner() { return 'newOwner' in k ? Session.currentAccount == k.newOwner() : false; },
 		},
 		s: {
-			'#new_owner_inp': {
-				change: (event) => { self.f.newOwner = event.target.value; },
-			},
 			'#change-owner-btn': {
-				click: () => { toTx(self.f.k, 'changeOwner', self.f.newOwner); },
-				// click: () => { regBase.changeOwner(k.address, self.f.newOwner); },
+				click: () => { regBase.changeOwner(Session.new_owner_inp, {from: Session.currentAccount, gas: 100000}); },
+			},
+			'#acc-owner-btn': {
+				click: () => { regBase.changeOwner({from: Session.currentAccount, gas: 100000}); },
 			},
 		},
 	})
 
 	return self;
-}
-
-const newOwner = (k) => {
-	return {
-		w: '<button id="acc-owner-btn">Accept Ownership</button></br>',
-		f: {
-
-		},
-		s: {
-			'#acc-owner-btn': {
-				click: () => { k.acceptOwnership(); },
-			},
-		},
-	}
 }
